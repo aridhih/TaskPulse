@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const DailyStandUp = () => {
+const DailyStandUp = ({closeForm}) => {
   const [formData, setFormData] = useState({
     name: "",
     yesterday: "",
@@ -19,10 +19,9 @@ const DailyStandUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50">
-      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-md">
+      <div className="w-full max-w-md p-6 rounded-md ">
         <h1 className="text-2xl font-bold text-center mb-4">Daily Stand Up</h1>
-        <p className="text-sm text-gray-600 text-center mb-6">
+        <p className="text-sm text-gray-600 text-center mb-2">
           Submit the form below and it will post in your team's Slack channel.
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -40,21 +39,6 @@ const DailyStandUp = () => {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your name"
             />
-          </div>
-
-          <div>
-            <label htmlFor="yesterday" className="block text-sm font-medium text-gray-700">
-              What did you do yesterday? <span className="text-red-500">(required)</span>
-            </label>
-            <textarea
-              id="yesterday"
-              name="yesterday"
-              value={formData.yesterday}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Briefly describe your work yesterday"
-            ></textarea>
           </div>
 
           <div>
@@ -85,16 +69,25 @@ const DailyStandUp = () => {
               placeholder="Mention any blockers or risks (optional)"
             ></textarea>
           </div>
-
+          <div className="flex"> 
+            <button
+                  type="button"
+                  className="bg-gray-200 w-[50%] text-gray-700  hover:bg-gray-300 px-4 py-2 rounded mr-2"
+                  onClick={closeForm}
+                >
+                  Cancel
+                </button>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-[50%] bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Submit
           </button>
+          </div>
+         
         </form>
       </div>
-    </div>
+   
   );
 };
 

@@ -8,7 +8,7 @@ const Inbox = () => {
   };
 
   return (
-    <div className='h-[calc(100vh-55px)]  w-full border-2 border-[#a2a7b0]  shadow-lg m-[1px] mx-[2px] rounded'>
+    <div className='h-[calc(100vh-55px)]  w-full border-2 border-[#d1d6e0]  shadow-lg m-[1px] mx-[2px] rounded'>
       <div className="h-[54px] w-full px-2 rounded flex items-center justify-start space-x-6">
         
         {['Important', 'Other', 'Snoozed', 'Cleared'].map((tab) => (
