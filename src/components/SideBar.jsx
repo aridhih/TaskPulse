@@ -10,7 +10,7 @@ const SideBar = () => {
         {
             name: "Home",
             icon: <IoHome />,
-            path: "/home"
+            path: "/"
         },
         {
             name: "Inbox",
@@ -36,7 +36,7 @@ const SideBar = () => {
     
 
     return (
-        <div className="h-[calc(100vh-48px)] w-[100px] bg-gray-800 text-white flex flex-col  justify-between">
+        <div className="h-[calc(100vh-48px)] w-[100px] bg-gray-800 text-white flex flex-col justify-between">
             <div className="flex flex-col gap-1 justify-center items-center">
                 {navLinks.map((link) => (
                     <div key={link.name} className='p-2 flex justify-center items-center'>
