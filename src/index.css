@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Slim Scrollbar */
+.scroll-container::-webkit-scrollbar {
+    width: 9px; /* Width of the scrollbar */
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background: #ffffff; /* Track color */
+    
+    border: 1px solid;
+    border-color: #9091937f;
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #b5b5b5; /* Thumb color (yellow) */
+    border-radius: 10px;
+  }
+  

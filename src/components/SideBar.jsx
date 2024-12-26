@@ -2,10 +2,10 @@ import React from 'react';
 import { FaInbox } from 'react-icons/fa';
 import { GrResources } from 'react-icons/gr';
 import { IoHome } from 'react-icons/io5';
-import { TfiCup } from 'react-icons/tfi';
+import { TfiAnnouncement, TfiCup } from 'react-icons/tfi';
 
 const SideBar = () => {
-
+    // const currentPath = useLocation().pathname;
     const navLinks = [
         {
             name: "Home",
@@ -27,21 +27,26 @@ const SideBar = () => {
             icon: <TfiCup />,
             path: "/goals"
         },
+        {
+            name: "Announcements",
+            icon: <TfiAnnouncement /> ,
+            path: "/Announcements"
+        },
     ]
-
+    
 
     return (
         <div className="h-[calc(100vh-48px)] w-[100px] bg-gray-800 text-white flex flex-col  justify-between">
-            <div>
+            <div className="flex flex-col gap-1 justify-center items-center">
                 {navLinks.map((link) => (
-                <div key={link.name} className='flex hover:bg-[#d3d3d328]  rounded-lg min-w-[100px] py-4 justify-center items-center'>
-                    <a href={link.path} key={link.name}
-                        className="flex gap-2 justify-center items-center"
-                    >{link.icon}  <h3>{link.name}</h3></a>
-                </div>
-            ))}
+                    <div key={link.name} className='p-2 flex justify-center items-center'>
+                        <a href={link.path} key={link.name} className="flex flex-col justify-center items-center">
+                            <div className='w-8 h-8 flex rounded-lg justify-center items-center hover:bg-[#d3d3d351]'>{link.icon}</div> <p className='text-[12px]'>{link.name}</p>
+                        </a>
+                    </div>
+                ))}
             </div>
-            
+
 
             <footer className="p-4 bg-gray-900 border-t border-gray-700">
                 <p className="text-sm text-gray-400">© 2024 TaskPulse</p>
