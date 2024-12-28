@@ -28,7 +28,7 @@ const Home = () => {
         </div>
 
         <div className="flex items-center relative">
-          {/* Manage Cards Button */}
+         
           <button
             className="border-blue-700 rounded h-8 p-1 mr-2 bg-blue-700 text-white"
             onClick={toggleSlider}
@@ -36,7 +36,7 @@ const Home = () => {
             Manage cards
           </button>
 
-          {/* Settings Icon */}
+        
           <div
             className="border-gray-200 border-l-2 pl-2 pr-2 cursor-pointer"
             onClick={toggleDropdown}
