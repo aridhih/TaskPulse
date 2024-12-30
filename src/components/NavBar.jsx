@@ -26,17 +26,17 @@ const NavBar = () => {
         <div className="w-[300px] flex bg-white rounded-lg flex-row justify-center">
           <input
             type="text"
-            className="w-full p-3 border rounded-lg text-black focus:outline-none placeholder-gray-500"
+            className="w-full p-3  rounded-lg text-black focus:outline-none placeholder-gray-500"
             placeholder="Search"
           />
-          <button className='cursor-default mr-2'>
-            <CiSearch className='text-black' />
+          <button className='cursor-default border-l rounded-r-lg hover:bg-slate-50'>
+            <CiSearch className='text-black mx-2' />
           </button>
         </div>
 
         <div>+ New</div>
 
-        <div className='p-1 rounded-md text-black bg-white font-semibold'>
+        <div className='p-1 rounded-md text-black hover:bg-slate-50 bg-white font-semibold'>
           <button onClick={toggleForm}>Daily Stand Up</button>
         </div>
 
