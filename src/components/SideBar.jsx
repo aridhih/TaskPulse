@@ -5,7 +5,6 @@ import { IoHome } from 'react-icons/io5';
 import { TfiAnnouncement, TfiCup } from 'react-icons/tfi';
 
 const SideBar = () => {
-    // const currentPath = useLocation().pathname;
     const navLinks = [
         {
             name: "Home",
@@ -34,7 +33,6 @@ const SideBar = () => {
         },
     ]
     
-
     return (
         <div className="h-[calc(100vh-48px)] w-[100px] bg-gray-800 text-white flex flex-col justify-between">
             <div className="flex flex-col gap-1 justify-center items-center">

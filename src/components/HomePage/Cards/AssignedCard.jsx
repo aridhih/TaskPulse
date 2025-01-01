@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PiDotsThreeOutlineThin } from 'react-icons/pi'
 
 const AssignedCard = () => {
+      const [isCardOpen, setIsCardOpen] = useState(false);
+      
+    const toggleCard = () => {
+      setIsCardOpen(!isCardOpen);
+    };
+  
   return (
     <div className='h-72 w-[50%] border-2 py-1 px-4 border-black rounded-xl' >
       <div className="h-[15%] border-b font-medium justify-between  flex items-center">

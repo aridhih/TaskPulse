@@ -28,28 +28,24 @@ const Home = () => {
       <div className="h-[54px] w-full border-b border-gray-200 p-2 justify-between rounded flex items-center">
         <div className="flex items-center gap-1 ml-1 ">
           <GoHome className="h-4 w-4" />
-          <p className="text-[13px] font-[cursive]">Home</p>
+          <p className="text-[13px] cursor-default font-[cursive]">Home</p>
         </div>
 
         <div className="flex items-center relative p-2 gap-2">
           {/* Manage Cards Button */}
-          <button
-            className="bg-[#624ae8] hover:bg-[#5a44d4] rounded h-8 py-1 px-2  text-white"
-            onClick={toggleSlider}
-          >
+          <button className="bg-[#624ae8] hover:bg-[#5a44d4] rounded h-8 py-1 px-2  text-white" onClick={toggleSlider}>
             Manage cards
           </button>
 
-        
-          <div
-            className="border-gray-200 border-l-2  h-6 pl-1 flex justify-center items-center"
-          >
-            <CiSettings className="cursor-pointer hover:bg-gray-100 rounded-md h-5 w-5" onClick={toggleDropdown} />
+          <div className="border-gray-200 border-l-2 h-4 pl-1 flex justify-center items-center">
+            <div className={`cursor-pointer h-7 hover:bg-gray-100 ${showDropdown && `bg-gray-200`} rounded-md flex justify-center items-center p-1`} onClick={toggleDropdown}>
+              <CiSettings className="h-5 w-5" />
+            </div>
           </div>
+
 
           {showDropdown && (
             <div className="fixed inset-0 z-50 " onClick={toggleDropdown}>
-
               <div className="absolute right-1.5 top-[105px] w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50" onClick={(e) => e.stopPropagation()}>
                 <div className="p-4">
                   <p className="text-xs text-gray-600">Layout</p>
