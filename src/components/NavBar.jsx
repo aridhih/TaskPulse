@@ -71,6 +71,9 @@ const NavBar = () => {
           </div>
         </div>
       )}
+
+      <div className='fixed left-[90px] top-[45px] bg-gray-800 w-1 h-1 rounded'>
+      </div>
     </>
   );
 };

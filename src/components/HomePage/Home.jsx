@@ -9,6 +9,7 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isToggled, setIsToggled] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
+  
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -27,7 +28,7 @@ const Home = () => {
     <div className="h-[calc(100vh-52px)] w-full border-2 border-[#d1d6e0] shadow-lg m-[1px] ml-[2px] mr-1 rounded">
       <div className="h-[54px] w-full border-b border-gray-200 p-2 justify-between rounded flex items-center">
         <div className="flex items-center gap-1 ml-1 ">
-          <GoHome className="h-4 w-4" />
+          <GoHome />
           <p className="text-[13px] cursor-default font-[cursive]">Home</p>
         </div>
 
@@ -74,15 +75,25 @@ const Home = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-113px)] w-full p-4 flex flex-col gap-4  bg-[#fafafa] overflow-y-scroll">
+      <div className="h-[calc(100vh-113px)] w-full p-4 flex  flex-col gap-4  bg-[#fafafa] overflow-y-scroll">
         {isToggled && (
           <div> <p className="text-2xl font-semibold">Good Evening, Hamad</p> </div>
 
         )}
-        <div className="flex justify-between gap-3 my-3">
-          <RecentsCard />
-          <AssignedCard />
-        </div>
+          <div className="grid grid-cols-2  gap-3 my-3">
+            <RecentsCard />
+            <AssignedCard />
+            <RecentsCard />
+            <AssignedCard />
+            <RecentsCard />
+            <AssignedCard />
+            <RecentsCard />
+            <AssignedCard />
+            <RecentsCard />
+            <AssignedCard />
+            <RecentsCard />
+            <AssignedCard />
+          </div>
 
 
 
@@ -99,7 +110,7 @@ const Home = () => {
             onClick={toggleSlider}
             className="text-gray-600 hover:text-gray-800"
           >
-            <RxCross2 className="h-7 w-7 p-1 hover:bg-gray-100 rounded" />
+            <RxCross2 className="h-7 w-7 p-1 hover:rotate-90 transform transition duration-300 ease-in-out rounded" />
 
           </button>
         </div>

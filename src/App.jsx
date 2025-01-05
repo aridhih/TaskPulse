@@ -4,19 +4,31 @@ import Home from "./components/HomePage/Home";
 import NavBar from "./components/NavBar";
 import SideBar from "./components/SideBar";
 import Inbox from "./components/InboxPage/Inbox";
-
+import Button from "./Button";
+import Login from "./components/Auth/Login";
 function App() {
   return (
     <Router>
-      <NavBar />
-      <div className="flex flex-row">
-        <SideBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/inbox" element={<Inbox />} />
-          
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/*"
+          element={
+            <div>
+              <NavBar />
+              <div className="flex flex-row">
+                <SideBar />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/inbox" element={<Inbox />} />
+                  <Route path="/button" element={<Button />} />
+                </Routes>
+              </div>
+            </div>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

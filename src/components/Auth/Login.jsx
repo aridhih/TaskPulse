@@ -1,133 +1,147 @@
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
 
-const Login = () => {
-
+function Login() {
     const [showPassword, setShowPassword] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [fireBaseError, setFireBaseError] = useState('');
-    const navigate = useNavigate();
-    
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
-
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigate("/dashboard");
-            }
-        });
-        return () => unsubscribe();
-    }, [navigate]);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-    const validateForm = () => {
-        const { email, password } = formData;
-        const newErrors = {};
 
-        if (!email) newErrors.email = "Email is required.";
-        if (!password) newErrors.password = "Password is required.";
-
-
-        setErrors(newErrors);
-
-        return Object.keys(newErrors).length === 0;
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
-    const signIn = (email, password) => {
-        signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-            if(userCredential.user.emailVerified) {
-                navigate("/dashboard");
-            }else {
-                auth.signOut();
-                setFireBaseError('Please Check your mailbox and verify your email');
-            }
-        }).catch(() => {
-            setFireBaseError('Invalid email or password');
-        });
-      };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (validateForm()) {
-        signIn(formData.email, formData.password);
-        }
-
-    };
     return (
-        <div className="flex items-center justify-center h-screen py-6 bg-gray-100">
-            <div className="bg-white px-6 py-3 rounded-lg shadow-xl w-full max-w-sm">
-                <h2 className="text-2xl font-semibold mb-3 text-center">Welcome to Crypto App</h2>
-                <p className="text-gray-600 mb-5 text-xs text-center">Enter your credentials to access the account</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label className="block text-gray-700 mb-3" htmlFor="email">Email</label>
-                        <input type="email"
-                            id="email"
-                            name="email"
-                            placeholder="name@email.com"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className={`w-full px-3 py-0.5 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600`}
-                        />
-                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+        <div className="grid grid-cols-2">
+            <div className="relative flex items-end px-4 pb-10 pt-60 bg-gray-50">
+                <div className="absolute inset-0">
+                    <img
+                        className="object-cover w-full h-full"
+                        src="https://cdn.rareblocks.xyz/collection/celebration/images/signup/4/girl-working-on-laptop.jpg"
+                        alt=""
+                    />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                <div className="relative">
+                    <div className="w-full max-w-xl xl:w-full xl:mx-auto xl:pr-24 xl:max-w-xl">
+                        <h3 className="text-4xl font-bold text-white">
+                            Join 35k+ web professionals &
+                            <br className="hidden xl:block" /> build your website
+                        </h3>
                     </div>
-                    <div className="mb-3 relative">
-                        <label className="block text-gray-700 mb-3" htmlFor="password">Password</label>
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            id="password" name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className={`w-full px-3 py-0.5 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600`}
-                        />
-                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-                        <span
-                            onClick={togglePasswordVisibility}
-                            className="absolute right-3 top-[50px] transform -translate-y-1/2 cursor-pointer text-gray-600"
-                        >
-                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                        </span>
-                    </div>
+                </div>
+            </div>
 
-                    <div className="mb-3 flex justify-between">
-                        <div className="flex items-center justify-center  text-center">
-                            <input type="checkbox" id="rememberMe" name="rememberMe" className="mr-2" />
-                            <label htmlFor="rememberMe" className="text-gray-600 text-sm">
-                                Remember me
-                            </label></div>
-                        <a href="/ForgotPassword" className="text-purple-600">Forget Password?</a>
+            <div className="flex items-center justify-center px-4 py-10 bg-white">
+                <div className="xl:w-full">
+                    <div className="flex justify-center items-center">
+                        <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl">Create an account</h2>
                     </div>
-                    {fireBaseError && <p className="text-red-500 text-sm mt-1 mb-3 text-center">{fireBaseError}</p>}
-                    <button type="submit" className="w-full bg-purple-600 mb-3  text-white py-2 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600">
-                        Log In
-                    </button>
+                    <form className="mt-8">
+                        <div className="space-y-5">
+                            <div>
+                                <label className="text-base font-medium text-gray-900">Full Name</label>
+                                <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your full name"
+                                        className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                    />
+                                </div>
+                            </div>
 
-                    <Link to="/SignUp">
-                        <button type="submit" className="w-full bg-purple-600 mb-3  text-white py-2 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600">
-                            Create New Account
-                        </button>
-                    </Link>
-                </form>
+                            <div>
+                                <label className="text-base font-medium text-gray-900">Email Address</label>
+                                <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type="email"
+                                        placeholder="Enter email to get started"
+                                        className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-base font-medium text-gray-900">Password</label>
+                                <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Enter your password"
+                                        className="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                    />
+                                    <span
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute right-3 inset-y-0 flex items-center cursor-pointer text-gray-600"
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-white border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80"
+                                >
+                                    Sign up
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
-};
+}
 
 export default Login;
