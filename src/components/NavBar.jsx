@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
+import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { IoIosAddCircle, IoMdAdd } from 'react-icons/io';
 import DailyStandUp from './DailyStandUp';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleAddMenu = () => {
+    setIsAddMenuOpen(!isAddMenuOpen);
   };
 
   const toggleForm = () => {
@@ -21,9 +28,9 @@ const NavBar = () => {
   return (
     <>
       {/* NavBar */}
-      <div className='bg-gray-800 h-12 flex flex-row justify-between p-2 text-white'>
-        <h1 className='text-xl font-bold'>TaskPulse</h1>
-        <div className="w-[300px] flex bg-white rounded-lg flex-row justify-center">
+      <div className='bg-background h-12 flex flex-row items-center justify-between p-2 text-white'>
+        <h1 className='text-xl text-accent font-bold cursor-default'><a href="/login">TaskPulse</a></h1>
+        <div className="w-[300px] h-8 flex bg-white rounded-lg flex-row justify-center">
           <input
             type="text"
             className="w-full p-3  rounded-lg text-black focus:outline-none placeholder-gray-500"
@@ -34,28 +41,61 @@ const NavBar = () => {
           </button>
         </div>
 
-        <div>+ New</div>
+        <div className='relative'>
+          <button className='text-textPrimary hover:text-white rounded-full p-1 font-semibold gap-1 flex items-center justify-center' onClick={toggleAddMenu}>
+           <IoIosAddCircle  />
+            <p>New</p>
+          </button>
+          {isAddMenuOpen && (
+            <div className='absolute right-0 mt-2 w-40 z-50 bg-white text-black p-2 rounded-md shadow-lg'>
+              <ul className='flex flex-col'>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaFileAlt />
+                  Add Doc
+                </li>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaTasks />
+                  Add Task
+                </li>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaBullseye />
+                  Add Goal
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
 
-        <div className='p-1 rounded-md text-black hover:bg-slate-50 bg-white font-semibold'>
-          <button onClick={toggleForm}>Daily Stand Up</button>
+
+        <div className='p-1 rounded-md   text-textPrimary hover:text-white font-semibold'>
+          <button onClick={toggleForm}>Daily Standup</button>
         </div>
 
         <div className='relative'>
           {/* Profile Icon */}
           <div
-            className='p-1 h-8 w-8 rounded-full border-white text-wrap border text-white bg-gray-600 cursor-pointer'
+            className='p-[3px] h-8 w-8 rounded-full border-white flex text-wrap border text-white bg-gray-600 cursor-pointer'
             onClick={toggleMenu}
           >
-            HA
+            <FaUserCircle size={24} />
           </div>
 
           {/* Dropdown Menu */}
           {isMenuOpen && (
-            <div className='absolute right-0 mt-2 w-40 bg-white text-black p-2 rounded-md shadow-lg'>
+            <div className='absolute right-0 mt-2 mr-[-7px] w-40 z-50 bg-white text-black p-2 rounded-md shadow-lg'>
               <ul className='flex flex-col'>
-                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md'>View Profile</li>
-                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md'>Settings</li>
-                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md'>Logout</li>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaUser />
+                  View Profile
+                </li>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaCog />
+                  Settings
+                </li>
+                <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <FaSignOutAlt />
+                  Logout
+                </li>
               </ul>
             </div>
           )}
@@ -72,7 +112,10 @@ const NavBar = () => {
         </div>
       )}
 
-      <div className='fixed left-[90px] top-[45px] bg-gray-800 w-1 h-1 rounded'>
+      <div className='fixed left-[89px] top-[44px] bg-background w-[6px] h-[6px] rounded'>
+      </div>
+
+      <div className='fixed right-0 top-[44px] bg-background w-[3px] h-[5px] rounded-l-lg'>
       </div>
     </>
   );

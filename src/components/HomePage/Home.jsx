@@ -9,7 +9,7 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isToggled, setIsToggled] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  
+
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -24,22 +24,22 @@ const Home = () => {
   };
 
   return (
-
-    <div className="h-[calc(100vh-52px)] w-full border-2 border-[#d1d6e0] shadow-lg m-[1px] ml-[2px] mr-1 rounded">
-      <div className="h-[54px] w-full border-b border-gray-200 p-2 justify-between rounded flex items-center">
-        <div className="flex items-center gap-1 ml-1 ">
+    <div className="h-[calc(100vh-50px)] w-full border  border-gray-200 rounded-lg bg-surface">
+      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
+        <div className="flex  items-center gap-1 ml-1 ">
           <GoHome />
-          <p className="text-[13px] cursor-default font-[cursive]">Home</p>
+          <p className="text-[13px]  cursor-default font-[cursive]">Home</p>
         </div>
 
         <div className="flex items-center relative p-2 gap-2">
           {/* Manage Cards Button */}
-          <button className="bg-[#624ae8] hover:bg-[#5a44d4] rounded h-8 py-1 px-2  text-white" onClick={toggleSlider}>
+          <button className=" hover:text-navbar font-semibold text-textPrimary border-textSecondary border hover:bg-button rounded-xl  px-1 py-[3px]" 
+            onClick={toggleSlider}>
             Manage cards
           </button>
 
-          <div className="border-gray-200 border-l-2 h-4 pl-1 flex justify-center items-center">
-            <div className={`cursor-pointer h-7 hover:bg-gray-100 ${showDropdown && `bg-gray-200`} rounded-md flex justify-center items-center p-1`} onClick={toggleDropdown}>
+          <div className="border-textSecondary border-l-2 h-4 pl-1 flex justify-center items-center">
+            <div className={`cursor-pointer h-7 hover:bg-surface ${showDropdown && `bg-surface`} rounded-md flex justify-center items-center p-1`} onClick={toggleDropdown}>
               <CiSettings className="h-5 w-5" />
             </div>
           </div>
@@ -51,7 +51,7 @@ const Home = () => {
                 <div className="p-4">
                   <p className="text-xs text-gray-600">Layout</p>
                   <div className="flex justify-between items-center mt-2">
-                    <span className="text-sm">Page greeting</span>
+                    <span className="text-sm text-navbar">Page greeting</span>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -75,33 +75,28 @@ const Home = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-113px)] w-full p-4 flex  flex-col gap-4  bg-[#fafafa] overflow-y-scroll">
+      <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-4  bg-surface overflow-y-scroll scroll-container scrollbar-hide">
         {isToggled && (
-          <div> <p className="text-2xl font-semibold">Good Evening, Hamad</p> </div>
+          <div> <p className="text-2xl font-semibold text-textPrimary">Good Morning, Hamad</p> </div>
 
         )}
-          <div className="grid grid-cols-2  gap-3 my-3">
-            <RecentsCard />
-            <AssignedCard />
-            <RecentsCard />
-            <AssignedCard />
-            <RecentsCard />
-            <AssignedCard />
-            <RecentsCard />
-            <AssignedCard />
-            <RecentsCard />
-            <AssignedCard />
-            <RecentsCard />
-            <AssignedCard />
-          </div>
+        <div className="grid grid-cols-2  gap-3 my-3">
+          <RecentsCard />
+          <AssignedCard />
+          <RecentsCard />
+          <AssignedCard />
+          <RecentsCard />
+          <AssignedCard />
+          <RecentsCard />
+          <AssignedCard />
 
-
+        </div>
 
       </div>
 
       {/* Slider Panel */}
       <div
-        className={`fixed top-[52px] right-0  h-[calc(100vh-58px)]  w-64 bg-white shadow-md rounded-r-sm border-gray-200 transform transition-transform duration-300 ease-in-out 
+        className={`fixed top-[51px] right-0 mr-[2px] h-[calc(100vh-55px)]  w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
           ${isSliderOpen ? "translate-x-0" : "translate-x-full "} ${isSliderOpen && "mr-2"}`}
       >
         <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">

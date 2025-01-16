@@ -3,18 +3,27 @@
 @tailwind utilities;
 /* Slim Scrollbar */
 .scroll-container::-webkit-scrollbar {
-    width: 9px; /* Width of the scrollbar */
+    width: 8px; /* Width of the scrollbar */
+    background: #121212;
+    padding-right: 2px;
   }
   
   .scroll-container::-webkit-scrollbar-track {
-    background: #ffffff; /* Track color */
+    background: #121212; /* Track color */
     
-    border: 1px solid;
-    border-color: #9091937f;
   }
   
   .scroll-container::-webkit-scrollbar-thumb {
-    background-color: #b5b5b5; /* Thumb color (yellow) */
+    background-color: #A6A6A6; 
     border-radius: 10px;
   }
-  
+
+/* Hide Scrollbar */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}

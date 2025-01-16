@@ -10,8 +10,8 @@ const RecentsCard = () => {
   };
 
   return (
-    <div className='h-72 py-1 px-4 border-2 border-black rounded-xl'>
-      <div className="h-[15%] border-b  font-medium justify-between  flex items-center">
+    <div className='h-72 border-gray-300 py-1 px-4 border bg-gray-200 rounded-xl'>
+      <div className="h-[15%] border-b border-gray-300 font-medium justify-between  flex items-center">
         <p>Recents</p>
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && 'text-black text-xl'} cursor-pointer text-gray-500`} onClick={toggleCard} />
       </div>

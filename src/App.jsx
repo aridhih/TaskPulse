@@ -6,23 +6,30 @@ import SideBar from "./components/SideBar";
 import Inbox from "./components/InboxPage/Inbox";
 import Button from "./Button";
 import Login from "./components/Auth/Login";
+import ClipsPage from "./components/ClipsPage/ClipsPage";
+import DocsPage from "./components/DocsPage/DocsPage";
+import Goals from "./components/GoalsPage/Goals";
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/button" element={<Button />} />
+
 
         <Route
           path="/*"
           element={
             <div>
               <NavBar />
-              <div className="flex flex-row">
+              <div className="flex flex-row bg-gray-200">
                 <SideBar />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/inbox" element={<Inbox />} />
-                  <Route path="/button" element={<Button />} />
+                  <Route path="/clips" element={<ClipsPage />} />
+                  <Route path="/docs" element={<DocsPage />} />
+                  <Route path="/goals" element={<Goals />} />
                 </Routes>
               </div>
             </div>
