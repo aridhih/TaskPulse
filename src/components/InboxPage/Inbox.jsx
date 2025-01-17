@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import { FaInbox } from 'react-icons/fa';
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
 import { MdFilterList, MdMoveToInbox } from 'react-icons/md';
@@ -6,12 +6,12 @@ import FilterInbox from './FilterInbox';
 import { RxCross2 } from 'react-icons/rx';
 
 const Inbox = () => {
-  
+
   const [activeTab, setActiveTab] = useState('Important');
   const [filterOpen, setFilterOpen] = useState(false);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  
-  
+
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -29,43 +29,45 @@ const Inbox = () => {
       <div className="h-[54px] w-full border-b text-white border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
 
         <div className='flex items-center gap-2'>
-        <div className="flex items-center gap-2 ml-1">
-          <FaInbox className="h-4 w-4" />
-          <p className="text-[13px] font-[cursive] cursor-default  border-textSecondary border-r-2  pr-4 "> Inbox</p>
+          <div className="flex items-center gap-2 ml-1">
+            <FaInbox className="h-4 w-4" />
+            <p className="text-[13px] font-[cursive] cursor-default  border-textSecondary border-r-2  pr-4 "> Inbox</p>
+          </div>
+
+          <div className='flex'>
+            {['Important', 'Other', 'Snoozed', 'Cleared'].map((tab) => (
+              <div key={tab} className={`${activeTab === tab ? 'border-b-2 border-textPrimary' : ''}`}>
+                <button
+                  className={`text-base font-semibold  p-1 m-1 hover:text-textPrimary rounded ${activeTab === tab
+                    ? 'text-textPrimary'
+                    : 'text-textSecondary'}`}
+                  onClick={() => handleTabClick(tab)}
+                >
+                  {tab}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className='flex'>
-          {['Important', 'Other', 'Snoozed', 'Cleared'].map((tab) => (
-            <div key={tab} className={`${activeTab === tab ? 'border-b-2 border-textPrimary' : ''}`}>
-              <button
-                className={`text-base font-semibold  p-1 m-1 hover:text-textPrimary rounded ${activeTab === tab
-                  ? 'text-textPrimary'
-                  : 'text-textSecondary'}`}
-                onClick={() => handleTabClick(tab)}
-              >
-                {tab}
-              </button>
-            </div>
-          ))}
-        </div>
-        </div>
-        
 
         <div className="flex  items-center gap-2 ml-2  relative">
 
-          <div className={`flex items-center font-semibold hover:text-navbar  text-textPrimary  gap-1 cursor-pointer ${filterOpen && `bg-button text-navbar`} border-textSecondary border hover:bg-button rounded-xl  px-1 py-[3px]`} onClick={toggleFilter}>
+          <div className={`flex items-center font-semibold hover:text-navbar    gap-1 cursor-pointer ${filterOpen && `bg-button text-navbar`} border-textSecondary border hover:bg-button rounded-xl  px-1 py-[3px]`}
+            onClick={toggleFilter}>
             <MdFilterList />
             <p>Filter</p>
           </div>
           <div className='border-l-2 border-textSecondary  pl-2 h-5 flex items-center'>
-            <div className="flex text-textPrimary items-center hover:text-navbar font-semibold gap-1 cursor-pointer  px-1 py-[3px] border-textSecondary border hover:bg-button rounded-xl" onClick={toggleSlider}>
+            <div className="flex text-textPrimary items-center hover:text-navbar font-semibold gap-1 cursor-pointer  px-1 py-[3px] border-textSecondary border hover:bg-button rounded-xl"
+              onClick={toggleSlider}>
               <HiOutlineAdjustmentsHorizontal />
               <p>Customize</p>
             </div>
           </div>
 
           {filterOpen && (
-            <FilterInbox  toggleFilter={toggleFilter}/>
+            <FilterInbox toggleFilter={toggleFilter} />
           )}
         </div>
       </div>
@@ -73,7 +75,7 @@ const Inbox = () => {
 
 
       <div className="h-[calc(100vh-113px)] w-full p-4 flex flex-col gap-4 text-textPrimary bg-surface items-center justify-center">
-        <MdMoveToInbox  className='h-12 w-12 text-textSecondary'/>
+        <MdMoveToInbox className='h-12 w-12 text-textSecondary' />
         <div>
           {activeTab === 'Important' && <><div className='flex justify-center '>
             <p>You don't have any important notifications</p></div></>
@@ -88,30 +90,30 @@ const Inbox = () => {
 
       </div>
 
-       {/* Slider Panel */}
-            <div
-              className={`fixed top-[50px] right-[-6px]  h-[calc(100vh-55px)]  w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
+      {/* Slider Panel */}
+      <div
+        className={`fixed top-[50px] right-[-6px]  h-[calc(100vh-55px)]  w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
                 ${isSliderOpen ? "translate-x-0" : "translate-x-full "} ${isSliderOpen && "mr-2"}`}
-            >
-              <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">
-                <h2 className="text-lg font-semibold">Customize Inbox</h2>
-                <button
-                  onClick={toggleSlider}
-                  className="text-gray-600 hover:text-gray-800"
-                >
-                  <RxCross2 className="h-7 w-7 p-1 hover:rotate-90 transform transition duration-300 ease-in-out rounded" />
-      
-                </button>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-600">Here are some options for customization:</p>
-                <ul className="mt-2 space-y-2">
-                  <li className="p-2 hover:bg-gray-100  rounded-lg">Option 1</li>
-                  <li className="p-2 hover:bg-gray-100 rounded-lg">Option 2</li>
-                  <li className="p-2 hover:bg-gray-100 rounded-lg">Option 3</li>
-                </ul>
-              </div>
-            </div>
+      >
+        <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">
+          <h2 className="text-lg font-semibold">Customize Inbox</h2>
+          <button
+            onClick={toggleSlider}
+            className="text-gray-600 hover:text-gray-800"
+          >
+            <RxCross2 className="h-7 w-7 p-1 hover:rotate-90 transform transition duration-300 ease-in-out rounded" />
+
+          </button>
+        </div>
+        <div className="p-4">
+          <p className="text-gray-600">Here are some options for customization:</p>
+          <ul className="mt-2 space-y-2">
+            <li className="p-2 hover:bg-gray-100  rounded-lg">Option 1</li>
+            <li className="p-2 hover:bg-gray-100 rounded-lg">Option 2</li>
+            <li className="p-2 hover:bg-gray-100 rounded-lg">Option 3</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

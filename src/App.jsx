@@ -9,11 +9,15 @@ import Login from "./components/Auth/Login";
 import ClipsPage from "./components/ClipsPage/ClipsPage";
 import DocsPage from "./components/DocsPage/DocsPage";
 import Goals from "./components/GoalsPage/Goals";
+import Signup from "./components/Auth/Signup";
+import Timesheets from "./components/TimesheetsPage/Timesheets";
+import PulsePage from "./components/PulsePage/PulsePage";
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/button" element={<Button />} />
 
 
@@ -30,6 +34,8 @@ function App() {
                   <Route path="/clips" element={<ClipsPage />} />
                   <Route path="/docs" element={<DocsPage />} />
                   <Route path="/goals" element={<Goals />} />
+                  <Route path="/timesheets" element={<Timesheets />} />
+                  <Route path="/pulse" element={<PulsePage />} />
                 </Routes>
               </div>
             </div>

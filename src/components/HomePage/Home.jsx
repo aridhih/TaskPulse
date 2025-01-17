@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiSettings } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
 import AssignedCard from "./Cards/AssignedCard";
@@ -9,7 +9,20 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isToggled, setIsToggled] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [greeting, setGreeting] = useState('');
 
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      setGreeting('Good Morning');
+    } else if (currentHour < 18) {
+      setGreeting('Good Afternoon');
+    } else if (currentHour < 22) {
+      setGreeting('Good Evening');
+    } else {
+      setGreeting('Good Night');
+    }
+  }, []);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -77,7 +90,7 @@ const Home = () => {
       {/* Main Content */}
       <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-4  bg-surface overflow-y-scroll scroll-container scrollbar-hide">
         {isToggled && (
-          <div> <p className="text-2xl font-semibold text-textPrimary">Good Morning, Hamad</p> </div>
+          <div> <p className="text-2xl font-semibold text-textPrimary">{greeting}, Hamad</p> </div>
 
         )}
         <div className="grid grid-cols-2  gap-3 my-3">
