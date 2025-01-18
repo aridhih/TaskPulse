@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
-import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt, FaVideo, FaRegStickyNote } from 'react-icons/fa';
+import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt, FaVideo } from 'react-icons/fa';
 import { IoIosAddCircle } from 'react-icons/io';
 import NewClipMenu from '../ToolPages/ClipsPage/NewClipMenu';
 import DailyStandUp from './DailyStandUp';
+import { LuNotebookPen } from 'react-icons/lu';
+import NotePad from './NotePad';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +14,11 @@ const NavBar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showClip, setShowClip] = useState(false);
   const [showNote, setShowNote] = useState(false);
+  const [showNotePad, setShowNotePad] = useState(false);
+
+  const toggleNotePad = () => {
+    setShowNotePad(!showNotePad);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -80,14 +87,14 @@ const NavBar = () => {
         <div className='p-1 rounded-md   text-textPrimary hover:text-white font-semibold'>
           <button onClick={toggleForm}>Daily Standup</button>
         </div>
-        <div className='flex items-center justify-center'>
+        <div className='flex items-center gap-2 justify-center'>
           <div className='p-2 rounded-md  relative text-textPrimary hover:text-white hover:bg-surface cursor-pointer font-semibold'
             onMouseEnter={() => setShowClip(true)}
             onMouseLeave={() => setShowClip(false)}
           >
             <FaVideo onClick={toggleNewClipMenu} />
             {showClip && (
-              <div className="absolute z-50 top-[42px] right-[-30px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
+              <div className="absolute z-50 top-[42px] right-[-27px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
                 <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]"></div>
                 Record a Clip
               </div>
@@ -98,9 +105,9 @@ const NavBar = () => {
             onMouseEnter={() => setShowNote(true)}
             onMouseLeave={() => setShowNote(false)}
           >
-            <FaRegStickyNote />
+            <LuNotebookPen onClick={toggleNotePad} />
             {showNote && (
-              <div className="absolute z-50 top-[42px] right-[-30px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
+              <div className="absolute z-50 top-[42px] right-[-27px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
                 <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]"></div>
                 Write a note
               </div>
@@ -156,6 +163,13 @@ const NavBar = () => {
       {isNewClipMenuOpen && (
         <NewClipMenu toggleMenu={toggleNewClipMenu} />
       )}
+
+      {/* NotePad */}
+      {showNotePad && (
+        <NotePad toggleNotePad={toggleNotePad} />
+      )}
+
+
       <div className='fixed left-[89px] top-[44px] bg-background w-[6px] h-[6px] rounded'>
       </div>
 

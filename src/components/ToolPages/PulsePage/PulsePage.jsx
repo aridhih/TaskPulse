@@ -27,7 +27,7 @@ const PulsePage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-115px)] w-full pt-8 flex flex-col gap-4 items-center bg-surface overflow-y-auto">
+      <div className="h-[calc(100vh-115px)] w-full pt-8 flex flex-col gap-4 items-center bg-surface overflow-y-auto scroll-container">
         <div className="bg-white p-4 rounded-lg shadow-md w-[80%]">
           <div className="text-md flex items-center w-fit font-semibold mb-4 text-surface">
             <GoDotFill className="text-green-500" /> <h2>People Online</h2></div>

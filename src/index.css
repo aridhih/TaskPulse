@@ -4,12 +4,11 @@
 /* Slim Scrollbar */
 .scroll-container::-webkit-scrollbar {
     width: 8px; /* Width of the scrollbar */
-    background: #121212;
     padding-right: 2px;
   }
   
   .scroll-container::-webkit-scrollbar-track {
-    background: #121212; /* Track color */
+    background: #2E2E2E; /* Track color */
     
   }
   
