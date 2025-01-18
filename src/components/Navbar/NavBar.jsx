@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
-import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt, FaVideo } from 'react-icons/fa';
+import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt, FaVideo, FaRegStickyNote } from 'react-icons/fa';
 import { IoIosAddCircle } from 'react-icons/io';
+import NewClipMenu from '../ToolPages/ClipsPage/NewClipMenu';
 import DailyStandUp from './DailyStandUp';
-import NewClipMenu from './ClipsPage/NewClipMenu';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +11,7 @@ const NavBar = () => {
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showClip, setShowClip] = useState(false);
+  const [showNote, setShowNote] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -79,19 +80,34 @@ const NavBar = () => {
         <div className='p-1 rounded-md   text-textPrimary hover:text-white font-semibold'>
           <button onClick={toggleForm}>Daily Standup</button>
         </div>
+        <div className='flex items-center justify-center'>
+          <div className='p-2 rounded-md  relative text-textPrimary hover:text-white hover:bg-surface cursor-pointer font-semibold'
+            onMouseEnter={() => setShowClip(true)}
+            onMouseLeave={() => setShowClip(false)}
+          >
+            <FaVideo onClick={toggleNewClipMenu} />
+            {showClip && (
+              <div className="absolute z-50 top-[42px] right-[-30px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
+                <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]"></div>
+                Record a Clip
+              </div>
+            )}
+          </div>
 
-        <div className='p-2 rounded-md  relative text-textPrimary hover:text-white hover:bg-surface cursor-pointer font-semibold'
-          onMouseEnter={() => setShowClip(true)}
-          onMouseLeave={() => setShowClip(false)}
-        >
-          <FaVideo onClick={toggleNewClipMenu} />
-          {showClip && (
-            <div className="absolute z-50 top-[42px] right-[-30px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
-              <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]"></div>
-              Record a Clip
-            </div>
-          )}
+          <div className='p-2 rounded-md  relative text-textPrimary hover:text-white hover:bg-surface cursor-pointer font-semibold'
+            onMouseEnter={() => setShowNote(true)}
+            onMouseLeave={() => setShowNote(false)}
+          >
+            <FaRegStickyNote />
+            {showNote && (
+              <div className="absolute z-50 top-[42px] right-[-30px] text-nowrap w-fit p-2 bg-white  border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
+                <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]"></div>
+                Write a note
+              </div>
+            )}
+          </div>
         </div>
+
 
         <div className='relative'>
           {/* Profile Icon */}

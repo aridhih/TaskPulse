@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { CiSettings } from "react-icons/ci";
-import { RxCross2 } from "react-icons/rx";
 import AssignedCard from "./Cards/AssignedCard";
 import RecentsCard from "./Cards/RecentsCard";
 import { GoHome } from "react-icons/go";
+import MyWork from "./Cards/MyWork";
+import HomeSliderPanel from "./HomeSliderPanel";
 
 const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isToggled, setIsToggled] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [greeting, setGreeting] = useState('');
+  const [cards, setCards] = useState(["Recents", "Assigned To Me", "My Work"]);
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -34,6 +36,14 @@ const Home = () => {
 
   const toggleSlider = () => {
     setIsSliderOpen(!isSliderOpen);
+  };
+
+  const addCard = (card) => {
+    setCards([...cards, card]);
+  };
+
+  const removeCard = (card) => {
+    setCards(cards.filter((c) => c !== card));
   };
 
   return (
@@ -94,43 +104,18 @@ const Home = () => {
 
         )}
         <div className="grid grid-cols-2  gap-3 my-3">
-          <RecentsCard />
-          <AssignedCard />
-          <RecentsCard />
-          <AssignedCard />
-          <RecentsCard />
-          <AssignedCard />
-          <RecentsCard />
-          <AssignedCard />
-
+          {cards.map((card) => {
+            if (card === "Recents") return <RecentsCard key={card} />;
+            if (card === "Assigned To Me") return <AssignedCard key={card} />;
+            if (card === "My Work") return <MyWork key={card} />;
+            return null;
+          })}
         </div>
 
       </div>
 
       {/* Slider Panel */}
-      <div
-        className={`fixed top-[51px] right-0 mr-[2px] h-[calc(100vh-55px)]  w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
-          ${isSliderOpen ? "translate-x-0" : "translate-x-full "} ${isSliderOpen && "mr-2"}`}
-      >
-        <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">
-          <h2 className="text-lg font-semibold">Manage Cards</h2>
-          <button
-            onClick={toggleSlider}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            <RxCross2 className="h-7 w-7 p-1 hover:rotate-90 transform transition duration-300 ease-in-out rounded" />
-
-          </button>
-        </div>
-        <div className="p-4">
-          <p className="text-gray-600">Here are some options for managing cards:</p>
-          <ul className="mt-2 space-y-2">
-            <li className="p-2 bg-gray-100 rounded-lg">Card 1</li>
-            <li className="p-2 bg-gray-100 rounded-lg">Card 2</li>
-            <li className="p-2 bg-gray-100 rounded-lg">Card 3</li>
-          </ul>
-        </div>
-      </div>
+      <HomeSliderPanel isSliderOpen={isSliderOpen}  toggleSlider={toggleSlider} cards={cards} addCard={addCard} removeCard={removeCard}/>
     </div>
 
   );

@@ -1,17 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/HomePage/Home";
-import NavBar from "./components/NavBar";
-import SideBar from "./components/SideBar";
-import Inbox from "./components/InboxPage/Inbox";
+import Home from "./components/ToolPages/HomePage/Home";
+import NavBar from "./components/NavBar/NavBar";
+import SideBar from "./components/SideBar/SideBar";
+import Inbox from "./components/ToolPages/InboxPage/Inbox";
 import Button from "./Button";
 import Login from "./components/Auth/Login";
-import ClipsPage from "./components/ClipsPage/ClipsPage";
-import DocsPage from "./components/DocsPage/DocsPage";
-import Goals from "./components/GoalsPage/Goals";
+import ClipsPage from "./components/ToolPages/ClipsPage/ClipsPage";
+import DocsPage from "./components/ToolPages/DocsPage/DocsPage";
+import Goals from "./components/ToolPages/GoalsPage/Goals";
 import Signup from "./components/Auth/Signup";
-import Timesheets from "./components/TimesheetsPage/Timesheets";
-import PulsePage from "./components/PulsePage/PulsePage";
+import Timesheets from "./components/ToolPages/TimesheetsPage/Timesheets";
+import PulsePage from "./components/ToolPages/PulsePage/PulsePage";
 function App() {
   return (
     <Router>
