@@ -17,7 +17,7 @@ const SideBar = () => {
         {
             name: "Home",
             icon: <IoHome />,
-            path: "/"
+            path: "/home"
         },
         {
             name: "Inbox",
@@ -52,7 +52,7 @@ const SideBar = () => {
     ];
 
     return (
-        <div className="h-[calc(100vh-48px)] w-[100px] bg-background text-textPrimary flex flex-col">
+        <div className="h-[calc(100vh-48px)] w-[100px] bg-gradient-to-b from-background via-blue-500 to-purple-500  text-textPrimary flex flex-col">
             <div className="flex flex-col gap-1 justify-evenly items-center">
                 {navLinks.map((link) => (
                     <div key={link.name} className='p-2 flex justify-center items-center'>
@@ -61,10 +61,10 @@ const SideBar = () => {
                             key={link.name}
                             className={`flex flex-col justify-center items-center ${currentPath === link.path ? 'text-accent' : 'hover:text-accent'}`}
                         >
-                            <div className={`w-8 h-8 flex rounded-lg justify-center items-center ${currentPath === link.path ? 'bg-button text-surface' : 'hover:bg-surface'} transform transition-transform duration-300 ${currentPath === link.path ? 'scale-100' : 'hover:scale-110'}`}>
+                            <div className={`w-8 h-8 flex rounded-lg justify-center items-center ${currentPath === link.path ? 'bg-button text-surface' : 'hover:bg-[#f9fafb50]'} transform transition-transform duration-300 ${currentPath === link.path ? 'scale-100' : 'hover:scale-110'}`}>
                                 {link.icon}
                             </div>
-                            <p className='text-[12px]'>{link.name}</p>
+                            <p className={`text-[12px] ${currentPath === link.path && 'text-white'}`}>{link.name}</p>
                         </a>
                     </div>
                 ))}

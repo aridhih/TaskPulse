@@ -11,7 +11,6 @@ const Inbox = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
 
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -25,8 +24,8 @@ const Inbox = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-50px)] w-full border  border-gray-200 rounded-lg bg-surface ">
-      <div className="h-[54px] w-full border-b text-white border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
+    <div className="h-[calc(100vh-50px)] w-full border  rounded-b-lg ">
+      <div className="h-[54px] w-full  text-white bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 justify-between  flex items-center">
 
         <div className='flex items-center gap-2'>
           <div className="flex items-center gap-2 ml-1">
@@ -50,16 +49,15 @@ const Inbox = () => {
           </div>
         </div>
 
-
         <div className="flex  items-center gap-2 ml-2  relative">
 
-          <div className={`flex items-center font-semibold hover:text-navbar    gap-1 cursor-pointer ${filterOpen && `bg-button text-navbar`} border-textSecondary border hover:bg-button rounded-xl  px-1 py-[3px]`}
+          <div className={`flex items-center font-semibold shadow-lg  hover:bg-[#ffffff50] text-white    gap-1 cursor-pointer ${filterOpen && `bg-[#ffffff50]`}  border border-white rounded-xl  px-1 py-[3px]`}
             onClick={toggleFilter}>
             <MdFilterList />
             <p>Filter</p>
           </div>
-          <div className='border-l-2 border-textSecondary  pl-2 h-5 flex items-center'>
-            <div className="flex text-textPrimary items-center hover:text-navbar font-semibold gap-1 cursor-pointer  px-1 py-[3px] border-textSecondary border hover:bg-button rounded-xl"
+          <div className='border-l-2 border-textPrimary  pl-2 h-5 flex items-center'>
+            <div className={`flex items-center font-semibold shadow-lg  hover:bg-[#ffffff50] text-white    gap-1 cursor-pointer ${isSliderOpen && `bg-[#ffffff50]`}  border border-white rounded-xl  px-1 py-[3px]`}
               onClick={toggleSlider}>
               <HiOutlineAdjustmentsHorizontal />
               <p>Customize</p>
@@ -72,9 +70,7 @@ const Inbox = () => {
         </div>
       </div>
 
-
-
-      <div className="h-[calc(100vh-113px)] w-full p-4 flex flex-col gap-4 text-textPrimary bg-surface items-center justify-center">
+      <div className="h-[calc(100vh-113px)] w-full p-4 flex flex-col gap-4  bg-white b items-center justify-center">
         <MdMoveToInbox className='h-12 w-12 text-textSecondary' />
         <div>
           {activeTab === 'Important' && <><div className='flex justify-center '>

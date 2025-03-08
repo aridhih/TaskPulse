@@ -5,13 +5,14 @@ import RecentsCard from "./Cards/RecentsCard";
 import { GoHome } from "react-icons/go";
 import MyWork from "./Cards/MyWork";
 import HomeSliderPanel from "./HomeSliderPanel";
+import Reports from "./Cards/Reports";
 
 const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isToggled, setIsToggled] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [greeting, setGreeting] = useState('');
-  const [cards, setCards] = useState(["Recents", "Assigned To Me", "My Work"]);
+  const [cards, setCards] = useState(["Recents", "Assigned To Me", "My Work","Reports"]);
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -47,22 +48,22 @@ const Home = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-50px)] w-full border  border-gray-200 rounded-lg bg-surface">
-      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
-        <div className="flex  items-center gap-1 ml-1 ">
+    <div className="h-[calc(100vh-50px)] w-full border border-gray-100 rounded-b-lg">
+      <div className="h-[54px] w-full  text-textPrimary bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 justify-between flex items-center">
+        <div className="flex  items-center gap-1 ml-1">
           <GoHome />
           <p className="text-[13px]  cursor-default font-[cursive]">Home</p>
         </div>
 
         <div className="flex items-center relative p-2 gap-2">
           {/* Manage Cards Button */}
-          <button className=" hover:text-navbar font-semibold text-textPrimary border-textSecondary border hover:bg-button rounded-xl  px-1 py-[3px]" 
+          <button className=" text-white font-semibold shadow-lg border-white  hover:bg-[#ffffff50] border rounded-xl  px-1 py-[3px]"
             onClick={toggleSlider}>
             Manage cards
           </button>
 
           <div className="border-textSecondary border-l-2 h-4 pl-1 flex justify-center items-center">
-            <div className={`cursor-pointer h-7 hover:bg-surface ${showDropdown && `bg-surface`} rounded-md flex justify-center items-center p-1`} onClick={toggleDropdown}>
+            <div className={`cursor-pointer h-7 hover:bg-[#ffffff50] hover:text-white  ${showDropdown && `bg-[#ffffff50]`} rounded-md flex justify-center items-center p-1`} onClick={toggleDropdown}>
               <CiSettings className="h-5 w-5" />
             </div>
           </div>
@@ -98,9 +99,9 @@ const Home = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-4  bg-surface overflow-y-scroll scroll-container scrollbar-hide">
+      <div className="h-[calc(100vh-105px)] w-full p-4 flex flex-col gap-4  bg-white overflow-y-scroll scroll-container scrollbar-hide">
         {isToggled && (
-          <div> <p className="text-2xl font-semibold text-textPrimary">{greeting}, Hamad</p> </div>
+          <div> <p className="text-2xl font-semibold text-black">{greeting}, Hamad</p> </div>
 
         )}
         <div className="grid grid-cols-2  gap-3 my-3">
@@ -108,6 +109,7 @@ const Home = () => {
             if (card === "Recents") return <RecentsCard key={card} />;
             if (card === "Assigned To Me") return <AssignedCard key={card} />;
             if (card === "My Work") return <MyWork key={card} />;
+            if (card === "Reports") return <Reports key={card} />;
             return null;
           })}
         </div>
@@ -117,7 +119,6 @@ const Home = () => {
       {/* Slider Panel */}
       <HomeSliderPanel isSliderOpen={isSliderOpen}  toggleSlider={toggleSlider} cards={cards} addCard={addCard} removeCard={removeCard}/>
     </div>
-
   );
 };
 

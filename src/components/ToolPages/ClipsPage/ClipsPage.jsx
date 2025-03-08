@@ -10,15 +10,15 @@ const ClipsPage = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-50px)] w-full border border-gray-200 rounded-lg bg-surface">
-      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
-        <div className="flex items-center gap-1 ml-1 text-textPrimary">
+    <div className="h-[calc(100vh-50px)] w-full border border-gray-200 rounded-b-lg bg-white">
+      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 justify-between flex items-center">
+        <div className="flex items-center gap-1 ml-1">
           <LuVideo />
           <p className="text-[13px] cursor-default font-[cursive]">Clips</p>
         </div>
 
         <div className="flex items-center relative p-2 gap-2">
-          <button className="bg-[#624ae8] hover:bg-[#5a44d4] rounded h-8 py-1 px-2 text-white" onClick={toggleMenu}>
+          <button className="bg-blue-600 hover:bg-blue-700 shadow-lg rounded h-8 py-1 px-2 text-white" onClick={toggleMenu}>
             New Clip
           </button>
           {showMenu && (
@@ -28,9 +28,9 @@ const ClipsPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-6 bg-surface overflow-y-scroll hide-scrollbar">
+      <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-6 bg-white overflow-y-scroll hide-scrollbar">
       
-          <p className="text-2xl font-semibold mb-6 mt-2 text-textPrimary">Welcome to Clips</p>
+          <p className="text-2xl font-semibold mb-6 mt-2 text-black">Welcome to Clips</p>
        
         <div className="grid grid-cols-3 gap-4">
           <div className="p-4 border cursor-pointer border-gray-200 hover:shadow-gray-200 rounded bg-white shadow" onClick={toggleMenu}>
@@ -50,14 +50,14 @@ const ClipsPage = () => {
           </div>
         </div>
         <div className="p-2 gap-2 flex flex-col items-center justify-center" >
-          <h1 className="text-xl text-textPrimary font-semibold">Create your first Clip!</h1>
+          <h1 className="text-xl text-navbar font-semibold">Create your first Clip!</h1>
           <p className="text-sm text-textSecondary">Create and share screen recordings to give your teammates context. Save your recordings, 
           </p>
           <p className="text-sm text-textSecondary">attach them to tasks, or share them anywhere.
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <button className="bg-[#624ae8] hover:bg-[#5a44d4] rounded h-8 py-1 px-2 text-white" onClick={toggleMenu}>
+          <button className="text-white bg-red-400 rounded h-8 py-1 px-2 hover:bg-[#ef4444c6] shadow-lg" onClick={toggleMenu}>
             Create Clip
           </button>
         </div>

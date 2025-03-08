@@ -43,8 +43,8 @@ const NavBar = () => {
   return (
     <>
       {/* NavBar */}
-      <div className='bg-background h-12 flex flex-row items-center justify-between p-2 text-white'>
-        <h1 className='text-xl text-accent font-bold cursor-default'>TaskPulse</h1>
+      <div className='bg-gradient-to-r from-background via-blue-500 to-purple-500 h-12 flex flex-row items-center justify-between p-2 text-white'>
+        <h1 className='text-xl text-white font-bold cursor-default'>TaskPulse</h1>
         <div className="w-[300px] h-8 flex bg-white rounded-lg flex-row justify-center">
           <input
             type="text"
@@ -170,11 +170,11 @@ const NavBar = () => {
       )}
 
 
-      <div className='fixed left-[89px] top-[44px] bg-background w-[6px] h-[6px] rounded'>
+      {/* <div className='fixed left-[89px] top-[44px] bg-background w-[6px] h-[6px] rounded'>
       </div>
 
       <div className='fixed right-0 top-[44px] bg-background w-[3px] h-[5px] rounded-l-lg'>
-      </div>
+      </div> */}
     </>
   );
 };

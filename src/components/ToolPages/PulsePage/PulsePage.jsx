@@ -11,8 +11,8 @@ const PulsePage = () => {
   const offlineUsers = ["user4", "user5"];
 
   return (
-    <div className="h-[calc(100vh-50px)] w-full border border-gray-200 rounded-lg bg-surface">
-      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-navbar p-2 justify-between rounded-t-lg flex items-center">
+    <div className="h-[calc(100vh-50px)] w-full border border-gray-200 rounded-b-lg bg-white">
+      <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 justify-between flex items-center">
         <div className="flex items-center gap-1 ml-1">
           <MdCastConnected />
           <p className="text-[13px] cursor-default font-[cursive]">Pulse</p>
@@ -27,7 +27,7 @@ const PulsePage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="h-[calc(100vh-115px)] w-full pt-8 flex flex-col gap-4 items-center bg-surface overflow-y-auto scroll-container">
+      <div className="h-[calc(100vh-115px)] w-full pt-8 flex flex-col gap-4 items-center bg-white overflow-y-auto scroll-container">
         <div className="bg-white p-4 rounded-lg shadow-md w-[80%]">
           <div className="text-md flex items-center w-fit font-semibold mb-4 text-surface">
             <GoDotFill className="text-green-500" /> <h2>People Online</h2></div>

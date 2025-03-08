@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { PiDotsThreeOutlineThin } from 'react-icons/pi'
 import RemoveCardMenu from './RemoveCardMenu';
 
-const RecentsCard = () => {
+const Reports = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
 
   const toggleCard = () => {
@@ -12,22 +12,16 @@ const RecentsCard = () => {
   return (
     <div className='h-72 border-gray-300 py-1 px-4 border bg-gray-200 rounded-xl shadow-lg shadow-gray-300'>
       <div className="h-[15%] border-b border-gray-300 font-medium justify-between  flex items-center">
-        <p>Recents</p>
+        <p>Reports</p>
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && 'text-black text-xl'} cursor-pointer text-gray-500`} onClick={toggleCard} />
       </div>
 
       <div className=' h-[85%] px-6 py-2'>
         <ol className='list-disc' > <li>
-          Task 1
+          Report 1
         </li>
           <li>
-            Task 2
-          </li>
-          <li>
-            Task 3
-          </li>
-          <li>
-            Task 4
+          Report 2
           </li>
         </ol>
 
@@ -45,4 +39,4 @@ const RecentsCard = () => {
   )
 }
 
-export default RecentsCard
+export default Reports

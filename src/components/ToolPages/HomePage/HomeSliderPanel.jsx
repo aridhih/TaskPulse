@@ -3,11 +3,11 @@ import { RxCross2 } from "react-icons/rx";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 const HomeSliderPanel = ({ isSliderOpen, toggleSlider, cards, addCard, removeCard }) => {
-  const allCards = ["Recents", "Assigned To Me", "My Work"];
+  const allCards = ["Recents", "Assigned To Me", "My Work", "Reports"];
 
   return (
     <div
-      className={`fixed top-[51px] right-0 mr-[2px] h-[calc(100vh-55px)] w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
+      className={`fixed top-[51px] right-[-6px] h-[calc(100vh-55px)] w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
       ${isSliderOpen ? "translate-x-0" : "translate-x-full "} ${isSliderOpen && "mr-2"}`}
     >
       <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">
