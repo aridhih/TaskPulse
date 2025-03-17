@@ -6,6 +6,8 @@ import NewClipMenu from '../ToolPages/ClipsPage/NewClipMenu';
 import DailyStandUp from './DailyStandUp';
 import { LuNotebookPen } from 'react-icons/lu';
 import NotePad from './NotePad';
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase"; // Adjust path if needed
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +17,20 @@ const NavBar = () => {
   const [showClip, setShowClip] = useState(false);
   const [showNote, setShowNote] = useState(false);
   const [showNotePad, setShowNotePad] = useState(false);
+
+
+
+  
+  const handleLogout = async (navigate) => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("userData"); // Optional: Clear any stored user info
+      navigate("/login"); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+    }
+  };
+
 
   const toggleNotePad = () => {
     setShowNotePad(!showNotePad);
@@ -140,7 +156,7 @@ const NavBar = () => {
                   </li>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaSignOutAlt />
-                    <a href="/login">Logout</a>
+                    <button onClick={handleLogout}>Logout</button>
                   </li>
                 </ul>
               </div>

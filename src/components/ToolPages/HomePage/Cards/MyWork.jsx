@@ -10,7 +10,7 @@ const MyWork = () => {
     };
   
   return (
-    <div className='h-72 border py-1 px-4 border-gray-300 rounded-xl bg-gray-200' >
+    <div className='h-72 border py-1 px-4 border-gray-300 rounded-xl bg-gray-200 shadow-lg shadow-gray-300' >
       <div className="h-[15%] border-b border-gray-300 font-medium justify-between  flex items-center">
         <p>My Work</p>
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && 'text-black text-xl'} cursor-pointer text-gray-500`} onClick={toggleCard} />

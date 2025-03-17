@@ -13,6 +13,8 @@ const Home = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [greeting, setGreeting] = useState('');
   const [cards, setCards] = useState(["Recents", "Assigned To Me", "My Work","Reports"]);
+  const [userName , setUserName] = useState('');
+
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -46,6 +48,24 @@ const Home = () => {
   const removeCard = (card) => {
     setCards(cards.filter((c) => c !== card));
   };
+
+//get logined user name from firebase datastore
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await fetch('https://my-json-server.typicode.com/your-api-url/users/1'); //replace your-api-url with your actual api url
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setUserName(data.name);
+      } catch (error) {
+        console.error('Error fetching user name:', error);
+      }
+    };
+    fetchUserName();
+  }, []);
+
 
   return (
     <div className="h-[calc(100vh-50px)] w-full border border-gray-100 rounded-b-lg">
@@ -101,7 +121,7 @@ const Home = () => {
       {/* Main Content */}
       <div className="h-[calc(100vh-105px)] w-full p-4 flex flex-col gap-4  bg-white overflow-y-scroll scroll-container scrollbar-hide">
         {isToggled && (
-          <div> <p className="text-2xl font-semibold text-black">{greeting}, Hamad</p> </div>
+          <div> <p className="text-2xl font-semibold text-black">{greeting}, {userName}</p> </div>
 
         )}
         <div className="grid grid-cols-2  gap-3 my-3">

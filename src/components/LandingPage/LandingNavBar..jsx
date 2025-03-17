@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 const LandingNavBar = () => {
     return (
-        <nav className="bg-white shadow-md w-full">
+        <nav className="bg-white w-full">
             <div className="p-4">
                 <div className="realative flex items-center">
-                    <div className="absolute left-4 top-4 flex items-center mt-2">
-                        <img src="public\logo.png" alt="logo" className="w-48 h-48" />
+                    <div className="absolute left-4 top-6 flex items-center mt-2">
+                        <img src="public\logo.png" alt="logo" className="w-40 h-40" />
                     </div>
                 </div>
                 <div className="fixed w-full p-10 flex justify-center items-center h-16">
