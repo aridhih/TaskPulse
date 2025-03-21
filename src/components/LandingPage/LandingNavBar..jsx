@@ -7,7 +7,7 @@ const LandingNavBar = () => {
             <div className="p-4">
                 <div className="realative flex items-center">
                     <div className="absolute left-4 top-6 flex items-center mt-2">
-                        <img src="public\logo.png" alt="logo" className="w-40 h-40" />
+                        <img src="/logo.png" alt="logo" className="w-40 h-40" />
                     </div>
                 </div>
                 <div className="fixed w-full p-10 flex justify-center items-center h-16">

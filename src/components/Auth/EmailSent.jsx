@@ -17,7 +17,7 @@ const EmailSent = () => {
   const email = location.state?.email;
 
   const handleEnterApp = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const EmailSent = () => {
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/ResetDone");
+        navigate("/login");
       }
     });
     return () => unsubscribe();

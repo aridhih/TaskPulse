@@ -51,15 +51,15 @@ function Login() {
       navigate("/home"); 
     } catch (error) {
       console.error("Login error:", error);
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
         setFireBaseError("Invalid email or password.");
       } else if (error.code === "auth/network-request-failed") {
-        setFireBaseError("Network error. Please check your internet connection.");
+        setFireBaseError("Network error. Please check your internet connection.");   
       } else {
         setFireBaseError("Something went wrong. Please try again.");
       }
     }
-  };
+  };  
 
   return (
     <motion.div className="grid grid-cols-1 lg:grid-cols-2 h-screen" initial="hidden" animate="visible" variants={fadeIn}>
@@ -121,6 +121,12 @@ function Login() {
               </div>
             </div>
 
+            {/* Forgot Password Link */}  
+            <div className="flex justify-end">
+              <a href="/login/forgotpassword" className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
+                Forgot Password?
+              </a>
+            </div>
             {/* Login Button */}
             <motion.button
               type="submit"

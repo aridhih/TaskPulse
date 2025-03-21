@@ -28,7 +28,7 @@ const ForgotPassword = () => {
         if(validateEmail(email)){  
         sendPasswordResetEmail(auth, email)
             .then(() => {
-                navigate('/Emailsent', { state: { email: email } });
+                navigate('/login/forgotpassword/emailsent', { state: { email: email } });
             })
             .catch((error) => {
                 setFireBaseError('error occured! Please try again later');

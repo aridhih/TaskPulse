@@ -15,6 +15,8 @@ import EmailVerification from "./components/Auth/EmailVerification";
 import ProtectedRoute from "./components/Auth/ProtectedRoute"; // Wrapper for protected routes
 import MainLayout from "./components/Layout/MainLayout"; // Main Layout for authenticated users
 import RegistrationSuccess from "./components/Auth/RegistrationSuccess";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import EmailSent from "./components/Auth/EmailSent";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/login/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/login/forgotpassword/emailsent" element={<EmailSent />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup/EmailVerification" element={<EmailVerification />} />
         <Route path="/signup/EmailVerification/RegistrationSuccess" element={<RegistrationSuccess />} />
