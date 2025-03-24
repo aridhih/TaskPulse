@@ -54,13 +54,15 @@ function Signup() {
         try {
             const { email, password, name } = formData;
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await sendEmailVerification(userCredential.user);
-            await addUserToDB(name, email);
+            const user = userCredential.user;
+    
+            await sendEmailVerification(user);
+            await addUserToDB(user.uid, name, email); // 🔥 Now using UID as document key
     
             navigate('/signup/EmailVerification', { state: { email } });
         } catch (error) {
             console.error("Signup error:", error);
-            
+    
             if (error.code === "auth/email-already-in-use") {
                 setFireBaseError("Email is already in use. Please try logging in.");
             } else if (error.code === "auth/network-request-failed") {
@@ -71,14 +73,19 @@ function Signup() {
         }
     };
     
-
-    const addUserToDB = async (name, email) => {
+    const addUserToDB = async (uid, name, email) => {
         try {
-            await setDoc(doc(db, "users", email), { name, email, role: "user" });
+            await setDoc(doc(db, "users", uid), {  // 🔥 Using UID instead of email
+                name,
+                email,
+                role: "user",
+                createdAt: new Date()
+            });
         } catch (error) {
             console.error("Error adding user to Firestore:", error);
         }
     };
+    
 
     const renderInput = (label, name, type, icon) => (
         <div>

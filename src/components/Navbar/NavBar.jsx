@@ -8,8 +8,10 @@ import { LuNotebookPen } from 'react-icons/lu';
 import NotePad from './NotePad';
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase"; // Adjust path if needed
+import { useUser } from '../Layout/UserContext';
 
 const NavBar = () => {
+  const user = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNewClipMenuOpen, setIsNewClipMenuOpen] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
@@ -148,7 +150,7 @@ const NavBar = () => {
                 <ul className='flex flex-col'>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaUser />
-                    View Profile
+                    {user.name}
                   </li>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaCog />
@@ -186,11 +188,6 @@ const NavBar = () => {
       )}
 
 
-      {/* <div className='fixed left-[89px] top-[44px] bg-background w-[6px] h-[6px] rounded'>
-      </div>
-
-      <div className='fixed right-0 top-[44px] bg-background w-[3px] h-[5px] rounded-l-lg'>
-      </div> */}
     </>
   );
 };

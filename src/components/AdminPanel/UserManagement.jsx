@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaUsers, FaUserCircle, FaEnvelope, FaPhone, FaTrash, FaEdit } from 'react-icons/fa';
 import { db } from '../../firebase';  
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -25,17 +25,30 @@ const UserManagement = () => {
     fetchUsers();
   }, []);
 
-  // Function to delete a user
+  // Function to delete a user via Cloud Function
   const handleDeleteUser = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await deleteDoc(doc(db, "users", userId));
-        setUsers(users.filter(user => user.id !== userId)); // Update UI after deletion
+        const response = await fetch(`https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/deleteUser?uid=${userId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          setUsers(users.filter(user => user.id !== userId)); // Update UI after deletion
+        } else {
+          console.error("Error deleting user from Cloud Function:", await response.text());
+        }
       } catch (error) {
-        console.error("Error deleting user:", error);
+        console.error("Error calling delete function:", error);
       }
     }
-  };
+};
+
 
   return (
     <div className="p-4 h-full bg-[#ffffff96] rounded shadow">
@@ -60,10 +73,12 @@ const UserManagement = () => {
                   <FaEnvelope className="mr-2 text-gray-600" />
                   <span>{user.email}</span>
                 </div>
-                <div className="flex items-center mb-2">
-                  <FaPhone className="mr-2 text-gray-600" />
-                  <span>{user.phone}</span>
-                </div>
+                {user.phone && (
+                  <div className="flex items-center mb-2">
+                    <FaPhone className="mr-2 text-gray-600" />
+                    <span>{user.phone}</span>
+                  </div>
+                )}
                 <div className="flex space-x-2 mt-2">
                   <button className="text-blue-600 hover:text-blue-800">
                     <FaEdit /> {/* Edit user button (to be implemented) */}
