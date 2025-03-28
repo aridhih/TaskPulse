@@ -20,7 +20,7 @@ const NavBar = () => {
   const [showNote, setShowNote] = useState(false);
   const [showNotePad, setShowNotePad] = useState(false);
 
-
+  
 
   
   const handleLogout = async (navigate) => {
@@ -32,7 +32,7 @@ const NavBar = () => {
       console.error("Logout failed:", error.message);
     }
   };
-
+ 
 
   const toggleNotePad = () => {
     setShowNotePad(!showNotePad);
@@ -149,8 +149,8 @@ const NavBar = () => {
               <div className='absolute right-[1px] top-12 w-40 z-50 bg-white text-black p-2 rounded-md shadow-lg' onClick={(e) => e.stopPropagation()}>
                 <ul className='flex flex-col'>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
-                    <FaUser />
-                    {user.name}
+                 <FaUser />
+                   {user.name}
                   </li>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaCog />
