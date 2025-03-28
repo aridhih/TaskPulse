@@ -26,6 +26,7 @@ import TaskDetails from "./components/Task/TaskDetails";
 import TaskForm from "./components/Task/TaskForm";
 import ProjectTasks from "./components/Task/ProjectTasks";
 import TeamTasks from "./components/Task/TeamTasks";
+import Teams from "./components/Teams/Teams";
 
 
 function App() {
@@ -55,6 +56,8 @@ function App() {
               <Route path="/goals" element={<Goals />} />
               <Route path="/timesheets" element={<Timesheets />} />
               <Route path="/pulse" element={<PulsePage />} />
+              <Route path="/teams" element={<Teams />} />
+
 
               {/* Task Management Routes */}
               <Route path="/tasks" element={<TaskList />} />

@@ -7,11 +7,15 @@ import DailyStandUp from './DailyStandUp';
 import { LuNotebookPen } from 'react-icons/lu';
 import NotePad from './NotePad';
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase"; // Adjust path if needed
 import { useUser } from '../Layout/UserContext';
+import Profile from './Profile';
+import { useNavigate } from "react-router-dom";
+import { auth } from '../../firebase';
 
 const NavBar = () => {
   const user = useUser();
+  const navigate = useNavigate();
+  const [isprofileOpen, setIsProfileOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNewClipMenuOpen, setIsNewClipMenuOpen] = useState(false);
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
@@ -21,15 +25,13 @@ const NavBar = () => {
   const [showNotePad, setShowNotePad] = useState(false);
 
 
-
-  
-  const handleLogout = async (navigate) => {
+  const handleLogout = async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem("userData"); // Optional: Clear any stored user info
-      navigate("/login"); // Redirect to login page after logout
+      localStorage.removeItem("userData");
+      navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error.message);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -56,6 +58,10 @@ const NavBar = () => {
 
   const closeForm = () => {
     setIsFormOpen(false);
+  };
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isprofileOpen);
   };
 
   return (
@@ -101,7 +107,6 @@ const NavBar = () => {
           )}
         </div>
 
-
         <div className='p-1 rounded-md   text-textPrimary hover:text-white font-semibold'>
           <button onClick={toggleForm}>Daily Standup</button>
         </div>
@@ -133,7 +138,6 @@ const NavBar = () => {
           </div>
         </div>
 
-
         <div className='relative'>
           {/* Profile Icon */}
           <div
@@ -148,7 +152,7 @@ const NavBar = () => {
             <div className="fixed inset-0 z-50 " onClick={toggleMenu}>
               <div className='absolute right-[1px] top-12 w-40 z-50 bg-white text-black p-2 rounded-md shadow-lg' onClick={(e) => e.stopPropagation()}>
                 <ul className='flex flex-col'>
-                  <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <li onClick={toggleProfile} className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaUser />
                     {user.name}
                   </li>
@@ -171,9 +175,15 @@ const NavBar = () => {
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white h-[80%]  p-2 rounded-md shadow-lg w-[90%] max-w-md flex items-center justify-center">
-
             <DailyStandUp closeForm={closeForm} />
           </div>
+        </div>
+      )}
+      {/* profile with Blur Effect */}
+      {isprofileOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+            <Profile toggleProfile={toggleProfile} toggleMenu = {toggleMenu}/>
+          
         </div>
       )}
 
@@ -186,8 +196,6 @@ const NavBar = () => {
       {showNotePad && (
         <NotePad toggleNotePad={toggleNotePad} />
       )}
-
-
     </>
   );
 };

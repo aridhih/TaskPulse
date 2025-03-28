@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import { BsQuestionOctagon } from 'react-icons/bs';
+import React from 'react';
+import { AiOutlineTeam } from 'react-icons/ai';
 import { FaInbox } from 'react-icons/fa';
 import { GrResources } from 'react-icons/gr';
 import { IoHome, IoVideocamOutline } from 'react-icons/io5';
 import { MdCastConnected } from 'react-icons/md';
 import { RiTimerLine } from 'react-icons/ri';
-import { TfiCup } from 'react-icons/tfi';
 import { useLocation } from 'react-router-dom';
 
 const SideBar = () => {
-    const [showHelp, setShowHelp] = useState(false);
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -28,11 +26,6 @@ const SideBar = () => {
             name: "Docs",
             icon: <GrResources />,
             path: "/docs"
-        },
-        {
-            name: "Goals",
-            icon: <TfiCup />,
-            path: "/goals"
         },
         {
             name: "Pulse",
@@ -69,20 +62,21 @@ const SideBar = () => {
                     </div>
                 ))}
             </div>
-            <div className='relative flex rounded-lg justify-center mt-5 items-center' >
-                <BsQuestionOctagon
-                    className='cursor-pointer '
-                    onMouseEnter={() => setShowHelp(true)}
-                    onMouseLeave={() => setShowHelp(false)}
-                    
-                />
-                {showHelp && (
-                    <div className="absolute z-50 bottom-[-9px] left-[68px] w-28 p-2  bg-white border text-surface border-gray-200 rounded-md shadow-lg text-center text-xs flex items-center">
-                        <div className="border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-gray-200 absolute left-[-10px]"></div>
-                        Need any help?
-                    </div>
-                )}
+            <div className='border-t pt-7 mt-4  border-gray-200 items-center justify-center flex'>
+                <div className='flex justify-center items-center w-fit'>
+                    <a
+                        href='/teams'
+                        key='Team'
+                        className={`flex flex-col justify-center items-center`}
+                    >
+                        <div className={`w-8 h-8 flex rounded-lg text-button justify-center items-center bg-surface ${currentPath === '/teams' ? 'scale-110' : 'hover:scale-110'} transform transition-transform duration-300`}>
+                            <AiOutlineTeam />
+                        </div>
+                        <p className={`text-[12px] font-semibold ${currentPath === '/teams' && 'text-white'}`}>Teams</p>
+                    </a>
+                </div>
             </div>
+
         </div>
     );
 };

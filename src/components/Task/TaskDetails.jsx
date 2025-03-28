@@ -15,8 +15,8 @@ const TaskDetails = () => {
   if (!task) return <p>Loading task details...</p>;
 
   return (
-    <div>
-      <h2>Task Details</h2>
+    <div className="p-4 bg-white shadow rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Task Details</h2>
       <p><b>Title:</b> {task.title}</p>
       <p><b>Description:</b> {task.description || "No description"}</p>
       <p><b>Status:</b> {task.status}</p>

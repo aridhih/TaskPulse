@@ -1,17 +1,12 @@
 import React from 'react'
 import { CgProfile } from 'react-icons/cg'
 import { IoMailUnreadOutline } from 'react-icons/io5'
-import { VscMention } from 'react-icons/vsc'
 
 const FilterInbox = ({toggleFilter}) => {
     const options = [
             {
                 icon : <CgProfile />,
                 title : "Assigned to me"
-            },
-            {
-                icon : <VscMention />,
-                title : "Mentioning me"
             },
             {
                 icon : <IoMailUnreadOutline />,
@@ -22,7 +17,7 @@ const FilterInbox = ({toggleFilter}) => {
 
         <div className="fixed inset-0 z-50 " onClick={toggleFilter}>
 
-        <div className="absolute right-36 top-[104\px] bg-white text-nowrap border border-gray-200 rounded-md shadow-lg z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute right-1 top-[104\px] bg-white text-nowrap border border-gray-200 rounded-md shadow-lg z-10" onClick={(e) => e.stopPropagation()}>
             <div className="p-2">
                { options.map((option) => (
                    

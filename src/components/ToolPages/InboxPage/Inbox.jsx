@@ -9,7 +9,6 @@ const Inbox = () => {
 
   const [activeTab, setActiveTab] = useState('Important');
   const [filterOpen, setFilterOpen] = useState(false);
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -19,9 +18,7 @@ const Inbox = () => {
     setFilterOpen(!filterOpen);
   };
 
-  const toggleSlider = () => {
-    setIsSliderOpen(!isSliderOpen);
-  };
+ 
 
   return (
     <div className="h-[calc(100vh-50px)] w-full border  rounded-b-lg ">
@@ -56,13 +53,6 @@ const Inbox = () => {
             <MdFilterList />
             <p>Filter</p>
           </div>
-          <div className='border-l-2 border-textPrimary  pl-2 h-5 flex items-center'>
-            <div className={`flex items-center font-semibold shadow-lg  hover:bg-[#ffffff50] text-white    gap-1 cursor-pointer ${isSliderOpen && `bg-[#ffffff50]`}  border border-white rounded-xl  px-1 py-[3px]`}
-              onClick={toggleSlider}>
-              <HiOutlineAdjustmentsHorizontal />
-              <p>Customize</p>
-            </div>
-          </div>
 
           {filterOpen && (
             <FilterInbox toggleFilter={toggleFilter} />
@@ -86,30 +76,7 @@ const Inbox = () => {
 
       </div>
 
-      {/* Slider Panel */}
-      <div
-        className={`fixed top-[50px] right-[-6px]  h-[calc(100vh-55px)]  w-64 bg-white shadow-md rounded-r-lg border-gray-200 transform transition-transform duration-300 ease-in-out 
-                ${isSliderOpen ? "translate-x-0" : "translate-x-full "} ${isSliderOpen && "mr-2"}`}
-      >
-        <div className="p-4 flex justify-between items-center border-b h-[53px] border-gray-200">
-          <h2 className="text-lg font-semibold">Customize Inbox</h2>
-          <button
-            onClick={toggleSlider}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            <RxCross2 className="h-7 w-7 p-1 hover:rotate-90 transform transition duration-300 ease-in-out rounded" />
-
-          </button>
-        </div>
-        <div className="p-4">
-          <p className="text-gray-600">Here are some options for customization:</p>
-          <ul className="mt-2 space-y-2">
-            <li className="p-2 hover:bg-gray-100  rounded-lg">Option 1</li>
-            <li className="p-2 hover:bg-gray-100 rounded-lg">Option 2</li>
-            <li className="p-2 hover:bg-gray-100 rounded-lg">Option 3</li>
-          </ul>
-        </div>
-      </div>
+      
     </div>
   );
 };

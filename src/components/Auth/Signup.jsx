@@ -57,7 +57,7 @@ function Signup() {
             const user = userCredential.user;
     
             await sendEmailVerification(user);
-            await addUserToDB(user.uid, name, email); // 🔥 Now using UID as document key
+            await addUserToDB(user.uid, name, email);
     
             navigate('/signup/EmailVerification', { state: { email } });
         } catch (error) {
@@ -75,9 +75,10 @@ function Signup() {
     
     const addUserToDB = async (uid, name, email) => {
         try {
-            await setDoc(doc(db, "users", uid), {  // 🔥 Using UID instead of email
+            await setDoc(doc(db, "users", uid), {  
                 name,
                 email,
+                uid: uid,
                 role: "user",
                 createdAt: new Date()
             });
