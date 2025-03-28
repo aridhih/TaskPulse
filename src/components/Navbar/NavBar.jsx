@@ -34,7 +34,7 @@ const NavBar = () => {
       console.error("Logout failed:", error);
     }
   };
-
+ 
 
   const toggleNotePad = () => {
     setShowNotePad(!showNotePad);
