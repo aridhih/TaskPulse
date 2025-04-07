@@ -6,7 +6,6 @@ import { MdOutlineContentCopy } from "react-icons/md";
 
 const Profile = ({ toggleProfile, toggleMenu }) => {
   const user = useUser();
-  const [profilePic, setProfilePic] = useState(null); // Placeholder, can be extended for uploads
   const [copied, setCopied] = useState(false); // State for copy feedback
 
   const handleCopy = () => {
@@ -31,18 +30,18 @@ const Profile = ({ toggleProfile, toggleMenu }) => {
         >
           ✖
         </button>
+        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+          <circle cx="50" cy="50" r="40" fill="#ffffff40" />
+          <circle cx="350" cy="50" r="30" fill="#ffffff40" />
+          <circle cx="200" cy="250" r="50" fill="#ffffff40" />
+        </svg>
 
-        {/* Profile Picture */}
+        <svg className="absolute bottom-0 left-0 w-full pointer-events-none" viewBox="0 0 1440 320">
+          <path fill="#ffffff40" d="M0,224L48,218.7C96,213,192,203,288,186.7C384,171,480,149,576,160C672,171,768,213,864,229.3C960,245,1056,235,1152,213.3C1248,192,1344,160,1392,144L1440,128L1440,320L0,320Z"></path>
+        </svg>
+
         <div className="relative w-32 h-32 mx-auto mb-4">
-          {profilePic ? (
-            <img
-              src={profilePic}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
-            />
-          ) : (
             <FaUserCircle className="w-32 h-32 text-gray-300" />
-          )}
         </div>
 
         {/* Name & Email */}

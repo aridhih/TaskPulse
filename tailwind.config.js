@@ -15,11 +15,15 @@ export default {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(0)' },
         },
-       
+        customPulse: {
+          '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
+          '50%': { opacity: '0.9', transform: 'scale(1.15)' }, // Peak at 80% opacity
+        },
       },
       animation: {
         slideLeft: 'slideLeft 0.5s ease-out forwards',
         slideRight: 'slideRight 0.5s ease-out forwards',
+        customPulse: 'customPulse 2s ease-in-out infinite',
       },
       colors: {
         background: '#121212',
@@ -31,7 +35,8 @@ export default {
         navbar: '#191919',
         border: '#2A2A2A',
       },
-    },
+    }
+    ,
   },
   plugins: [],
 }

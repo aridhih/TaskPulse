@@ -16,6 +16,7 @@ const Teams = () => {
     const [projectName, setProjectName] = useState('');
     const [isCreator, setIsCreator] = useState(false);
     const [showTeamForm, setShowTeamForm] = useState(false);
+    const [firebaseError, setFirebaseError] = useState(null);
 
 
     useEffect(() => {
@@ -28,14 +29,18 @@ const Teams = () => {
                 const teamsList = teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 setTeams(teamsList); // Teams ko state me update kar diya
-
-                // Fetch creator names AFTER teams state updates
-                fetchCreatorNames(teamsList);
-                setTeams(teamsList);
-
             } catch (error) {
                 console.error("Error fetching teams:", error);
-            } finally {
+                if (error.code === 'permission-denied') {
+                    setFirebaseError("You do not have permission to access this resource.");
+                } else if (error.code === 'unavailable') {
+                    setFirebaseError("Cannot connect to server. Please check your internet connection.");
+                } else {
+                    setFirebaseError("Something went wrong. Please try again later.");
+                }
+            }
+            
+            finally {
                 setLoading(false);
             }
         };
@@ -43,7 +48,7 @@ const Teams = () => {
         fetchTeams();
     }, []);
 
-    
+
 
 
     const fetchProjects = async (team) => {
@@ -58,6 +63,9 @@ const Teams = () => {
         } catch (error) {
             console.error("Error fetching projects:", error);
         }
+        finally {
+            setLoading(false);
+        }
     };
 
 
@@ -65,6 +73,7 @@ const Teams = () => {
         setSelectedTeam(team);
         setProjects([]);
         setShowProjectForm(false);
+        setLoading(true);
         fetchProjects(team);
     };
 
@@ -98,6 +107,10 @@ const Teams = () => {
         }
     };
 
+    const handleProjectDeleted = (projectId) =>{
+        setProjects((prevProjects) => prevProjects.filter((project) => project.id !== projectId)); 
+    }
+
     const handleTeamCreated = (newTeam) => {
         setTeams((prevTeams) => [...prevTeams, newTeam]); // Update teams list
         setShowTeamForm(false); // Hide form after creating a team
@@ -105,15 +118,37 @@ const Teams = () => {
 
     return (
         <div className="p-6 border h-full bg-gray-50">
-            <h2 className="text-2xl font-bold text-center text-gray-700 mb-4 bg-gray-100 shadow-md p-5 rounded-lg shadow-purple-200 scale-90">
+            <h2 className="relative text-2xl font-bold text-center text-gray-700 mb-4 bg-gray-100 shadow-md p-5 rounded-lg overflow-hidden">
                 Team Space
+                <svg
+                    className="absolute top-0 left-0 w-full h-full opacity-20"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M0 20 C30 0, 60 40, 90 20 S150 0, 180 20 S240 40, 270 20"
+                        stroke="#A855F7"
+                        strokeWidth="4"
+                        fill="none"
+                    />
+                </svg>
+                <svg
+                    className="absolute bottom-0 right-0 w-full h-full opacity-20 rotate-180"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M0 20 C30 0, 60 40, 90 20 S150 0, 180 20 S240 40, 270 20"
+                        stroke="#A855F7"
+                        strokeWidth="4"
+                        fill="none"
+                    />
+                </svg>
             </h2>
 
             <BreadCrumb selectedTeam={selectedTeam} onBack={() => { setSelectedTeam(null); setIsCreator(false); }} />
 
             {loading ? (
                 <div className="flex justify-center items-center h-20">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-4 mt-48 border-blue-500"></div>
                 </div>
             ) : selectedTeam ? (
                 <div>
@@ -130,26 +165,32 @@ const Teams = () => {
                         )}
                     </div>
 
-                    <ProjectList projects={projects} />
+                    <ProjectList projects={projects} isCreator={isCreator} onProjectDeleted={handleProjectDeleted} />
 
                     {isCreator && showProjectForm && (
                         <ProjectForm projectName={projectName} setProjectName={setProjectName} error={error} handleCreateProject={handleCreateProject} />
                     )}
+                </div>
+            ) : firebaseError ? ( 
+                <div className="h-[80%] justify-center items-center flex">
+                    <div className="text-gray-500 flex flex-col space-y-3">
+                        <p className="text-lg font-semibold">{firebaseError}</p>
+                    </div>
                 </div>
             ) : teams.length === 0 ? (
                 <div className='h-[80%] justify-center items-center flex'>
 
                     {!showTeamForm && (
                         <div className="text-gray-500  flex flex-col space-y-3">
-                        <p className="text-lg font-semibold">You are not part of any team yet. 🚀</p>
-                        <p className="text-sm">Create a new team or ask an admin to add you to one.</p>
-                        <button
-                            onClick={() => setShowTeamForm(true)}
-                            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
-                        >
-                            Create a Team
-                        </button>
-                    </div>
+                            <p className="text-lg font-semibold">You are not part of any team yet. 🚀</p>
+                            <p className="text-sm">Create a new team or ask an admin to add you to one.</p>
+                            <button
+                                onClick={() => setShowTeamForm(true)}
+                                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                            >
+                                Create a Team
+                            </button>
+                        </div>
                     )}
                     {showTeamForm && <TeamForm onTeamCreated={handleTeamCreated} />}
 

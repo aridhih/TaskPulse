@@ -104,7 +104,7 @@ const Home = () => {
       {/* Main Content */}
       <div className="h-[calc(100vh-105px)] w-full p-4 flex flex-col gap-4  bg-white overflow-y-scroll scroll-container scrollbar-hide">
         {isToggled && (
-         user &&(<div> <p className="text-2xl font-semibold text-black">{greeting}, {user.name}</p> </div>)
+         user &&(<div> <p className="text-2xl font-semibold text-black">{greeting}, {user.name.slice(0, 1).toUpperCase() + user.name.slice(1)}</p> </div>)
 
         )}
         <div className="grid grid-cols-2  gap-3 my-3">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
-import { FaUserCircle, FaFileAlt, FaTasks, FaBullseye, FaUser, FaCog, FaSignOutAlt, FaVideo } from 'react-icons/fa';
+import { FaFileAlt, FaTasks, FaUser, FaCog, FaSignOutAlt, FaVideo, FaUserCircle } from 'react-icons/fa';
 import { IoIosAddCircle } from 'react-icons/io';
 import NewClipMenu from '../ToolPages/ClipsPage/NewClipMenu';
 import DailyStandUp from './DailyStandUp';
@@ -34,7 +34,7 @@ const NavBar = () => {
       console.error("Logout failed:", error);
     }
   };
- 
+
 
   const toggleNotePad = () => {
     setShowNotePad(!showNotePad);
@@ -97,10 +97,6 @@ const NavBar = () => {
                     <FaTasks />
                     Add Task
                   </li>
-                  <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
-                    <FaBullseye />
-                    Add Goal
-                  </li>
                 </ul>
               </div>
             </div>
@@ -139,13 +135,18 @@ const NavBar = () => {
         </div>
 
         <div className='relative'>
-          {/* Profile Icon */}
           <div
-            className='p-[3px] h-8 w-8 rounded-full border-white flex text-wrap border text-white bg-gray-600 cursor-pointer'
+            className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center cursor-pointer"
             onClick={toggleMenu}
           >
-            <FaUserCircle size={24} />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-violet-600 blur-sm opacity-100 animate-customPulse"></div>
+            <div className="relative z-10 text-white font-semibold">
+              {user ? user.name.slice(0, 2).toUpperCase() : (<FaUserCircle className='h-10 w-10' />)}
+            </div>
           </div>
+
+
+
 
           {/* Dropdown Menu */}
           {isMenuOpen && (
@@ -154,15 +155,15 @@ const NavBar = () => {
                 <ul className='flex flex-col'>
                   <li onClick={toggleProfile} className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaUser />
-                    {user.name}
+                    {user.name.slice(0, 1).toUpperCase() + user.name.slice(1)}
                   </li>
                   <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaCog />
                     Settings
                   </li>
-                  <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2' onClick={handleLogout}>
                     <FaSignOutAlt />
-                    <button onClick={handleLogout}>Logout</button>
+                    <p>Logout</p>
                   </li>
                 </ul>
               </div>
@@ -182,8 +183,8 @@ const NavBar = () => {
       {/* profile with Blur Effect */}
       {isprofileOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
-            <Profile toggleProfile={toggleProfile} toggleMenu = {toggleMenu}/>
-          
+          <Profile toggleProfile={toggleProfile} toggleMenu={toggleMenu} />
+
         </div>
       )}
 
@@ -194,7 +195,7 @@ const NavBar = () => {
 
       {/* NotePad */}
       {showNotePad && (
-        <NotePad toggleNotePad={toggleNotePad} />
+        <NotePad toggleNotePad={toggleNotePad}  user={user}/>
       )}
     </>
   );
