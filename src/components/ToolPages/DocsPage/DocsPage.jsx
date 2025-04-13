@@ -86,7 +86,26 @@ const DocsPage = () => {
         <div className="grid grid-cols-2 gap-3 my-3">
           {/* Render Docs */}
           {docs.length === 0 ? (
-            <p>No documents available. Create one to start!</p>
+            <div className=" w-full p-4 flex flex-col gap-6 bg-white overflow-y-scroll hide-scrollbar">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 border cursor-pointer border-gray-200 hover:shadow-gray-200 rounded bg-white shadow" >
+                  <h3 className="text-lg font-semibold text-navbar">Record in a snap</h3>
+                  <p className="text-sm text-surface">Capture your device's screen with just a few clicks. Record and effortlessly share your videos with anyone.
+                  </p>
+                </div>
+                <div className="p-4 border cursor-pointer border-gray-200 hover:shadow-gray-200 rounded bg-white shadow" >
+                  <h3 className="text-lg font-semibold text-navbar">Unlock async productivity</h3>
+                  <p className="text-sm text-surface">Skip the meetings and share all of your design updates, feedback videos, onboarding videos, and more in one place.
+                  </p>
+                </div>
+                <div className="p-4 border cursor-pointer hover:shadow-gray-200 border-gray-200 rounded bg-white shadow" >
+                  <h3 className="text-lg font-semibold text-navbar">Watch, share, collaborate</h3>
+                  <p className="text-sm text-surface">Clips automatically generate a link, allowing you to quickly share your clips anywhere, even outside of your Workspace.
+                  </p>
+                </div>
+              </div>
+              <p>No documents available. Create one to start!</p>
+            </div>
           ) : (
             docs.map((doc, index) => (
               <div
