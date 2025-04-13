@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { PiDotsThreeOutlineThin } from 'react-icons/pi'
 import RemoveCardMenu from './RemoveCardMenu';
 
-const Reports = () => {
+const Reports = ({removeCard}) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
 
   const toggleCard = () => {
@@ -29,7 +29,7 @@ const Reports = () => {
 
       {isCardOpen && (
         <>
-          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen} />
+          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen}  removeCard={removeCard} cardName="Reports" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}

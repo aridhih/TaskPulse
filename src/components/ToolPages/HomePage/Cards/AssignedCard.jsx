@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { PiDotsThreeOutlineThin } from 'react-icons/pi'
 import RemoveCardMenu from './RemoveCardMenu';
 
-const AssignedCard = () => {
+const AssignedCard = ({removeCard}) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -26,7 +26,7 @@ const AssignedCard = () => {
      
       {isCardOpen && (
         <>
-          <RemoveCardMenu toggleCard={toggleCard} />
+          <RemoveCardMenu toggleCard={toggleCard} removeCard={removeCard} cardName="Assigned To Me" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}

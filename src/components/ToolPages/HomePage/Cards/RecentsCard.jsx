@@ -4,7 +4,7 @@ import RemoveCardMenu from './RemoveCardMenu';
 import { useTasks } from '../../../Layout/TaskContext';
 import { useNavigate } from 'react-router-dom';
 
-const RecentsCard = () => {
+const RecentsCard = ({removeCard}) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const { tasks } = useTasks();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const RecentsCard = () => {
 
       {isCardOpen && (
         <>
-          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen} />
+          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen} removeCard={removeCard} cardName="Recents" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}

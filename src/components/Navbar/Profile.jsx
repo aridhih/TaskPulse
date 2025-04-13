@@ -22,7 +22,7 @@ const Profile = ({ toggleProfile, toggleMenu }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
       <div className="bg-gradient-to-br from-blue-600 to-purple-700 p-6 rounded-2xl shadow-xl w-[400px] text-center relative text-white animate-fade-in">
-        
+
         {/* Close Button */}
         <button
           onClick={() => { toggleProfile(); toggleMenu(); }}
@@ -41,7 +41,12 @@ const Profile = ({ toggleProfile, toggleMenu }) => {
         </svg>
 
         <div className="relative w-32 h-32 mx-auto mb-4">
-            <FaUserCircle className="w-32 h-32 text-gray-300" />
+          <input
+            type="file"
+            accept="image/*"
+            className="absolute right-5 top-1 w-32 h-32 opacity-80  cursor-pointer z-10"
+            onChange={(e) => console.log('File selected:', e.target.files[0])}
+          /> <FaUserCircle className="w-32 h-32 text-gray-300" />
         </div>
 
         {/* Name & Email */}
@@ -50,11 +55,11 @@ const Profile = ({ toggleProfile, toggleMenu }) => {
           <p className="text-gray-300">Email: {user?.email || "user@example.com"}</p>
 
           {auth.currentUser?.uid && (
-            <p 
+            <p
               className="text-gray-300"
             >
-              UID: {auth.currentUser.uid} 
-              <MdOutlineContentCopy  onClick={handleCopy} className="inline-block text-xl ml-2 cursor-pointer hover:text-gray-100 transition" />
+              UID: {auth.currentUser.uid}
+              <MdOutlineContentCopy onClick={handleCopy} className="inline-block text-xl ml-2 cursor-pointer hover:text-gray-100 transition" />
               {copied && <span className="text-green-400 ml-2">Copied!</span>}
             </p>
           )}

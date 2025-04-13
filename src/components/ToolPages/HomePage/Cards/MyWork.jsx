@@ -5,7 +5,7 @@ import { BsListTask } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 import { AiOutlineCalendar, AiOutlineBell } from "react-icons/ai";
 
-const MyWork = () => {
+const MyWork = ({removeCard}) => {
     const [isCardOpen, setIsCardOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,7 +17,6 @@ const MyWork = () => {
     const toggleCard = () => setIsCardOpen(!isCardOpen);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-    const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
     const togglePersonalList = () => setIsPersonalListOpen(!isPersonalListOpen);
     const toggleNotify = () => setIsNotifyOpen(!isNotifyOpen);
     const toggleDescription = () => setIsDescriptionOpen(!isDescriptionOpen);
@@ -36,7 +35,7 @@ const MyWork = () => {
 
             {isCardOpen && (
                 <>
-                    <RemoveCardMenu toggleCard={toggleCard} />
+                    <RemoveCardMenu toggleCard={toggleCard} removeCard={removeCard} cardName="My Work" />
                     <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
                 </>
             )}

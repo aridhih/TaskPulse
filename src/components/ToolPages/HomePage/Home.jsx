@@ -42,7 +42,7 @@ const Home = () => {
   };
 
   const addCard = (card) => {
-    setCards([...cards, card]);a
+    setCards([...cards, card]);
   };
 
   const removeCard = (card) => {
@@ -109,10 +109,10 @@ const Home = () => {
         )}
         <div className="grid grid-cols-2  gap-3 my-3">
           {cards.map((card) => {
-            if (card === "Recents") return <RecentsCard key={card} />;
-            if (card === "Assigned To Me") return <AssignedCard key={card} />;
-            if (card === "My Work") return <MyWork key={card} />;
-            if (card === "Reports") return <Reports key={card} />;
+            if (card === "Recents") return <RecentsCard key={card} removeCard={removeCard}/>;
+            if (card === "Assigned To Me") return <AssignedCard key={card}  removeCard={removeCard}/>;
+            if (card === "My Work") return <MyWork key={card} removeCard={removeCard} />;
+            if (card === "Reports") return <Reports key={card} removeCard={removeCard} />;
             return null;
           })}
         </div>

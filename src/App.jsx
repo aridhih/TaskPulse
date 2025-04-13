@@ -27,6 +27,7 @@ import TaskForm from "./components/Task/TaskForm";
 import ProjectTasks from "./components/Task/ProjectTasks";
 import TeamTasks from "./components/Task/TeamTasks";
 import Teams from "./components/Teams/Teams";
+import VideoUploader from "./VideoUploader";
 
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
         <Router>
           <Routes>
             {/* Public Routes */}
+            <Route path="/vid" element={<VideoUploader />} />   
+
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/login/forgotpassword" element={<ForgotPassword />} />

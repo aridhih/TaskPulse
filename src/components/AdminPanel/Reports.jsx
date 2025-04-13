@@ -1,12 +1,7 @@
 import React from 'react';
 import { FaChartPie } from 'react-icons/fa';
 import { Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, } from 'chart.js';
 
 ChartJS.register(
   ArcElement,
