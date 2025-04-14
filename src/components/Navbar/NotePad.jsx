@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { GiNotebook } from 'react-icons/gi';
-import { IoMdClose, IoMdSearch } from 'react-icons/io';
+import { IoMdClose } from 'react-icons/io';
 import { collection, query, where, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, onSnapshot, orderBy } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { ImBin } from 'react-icons/im';
-import { BiEdit } from 'react-icons/bi';
 
 const NotePad = ({ toggleNotePad, user }) => {
     const [showCloseNotepad, setShowCloseNotepad] = useState(false);
@@ -59,8 +58,6 @@ const NotePad = ({ toggleNotePad, user }) => {
             console.error('Error updating note:', err);
         }
     };
-
-
 
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {

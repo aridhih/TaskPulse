@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { FaUserCircle, FaUser, FaCog, FaSignOutAlt, FaVideo } from 'react-icons/fa';
 import { IoIosAddCircle } from 'react-icons/io';
-import NewClipMenu from '../ToolPages/ClipsPage/NewClipMenu';
 import DailyStandUp from './DailyStandUp';
 import { LuNotebookPen } from 'react-icons/lu';
 import NotePad from './NotePad';
@@ -14,6 +13,7 @@ import Profile from './Profile';
 import { useNavigate } from "react-router-dom";
 import { auth } from '../../firebase';
 import { PiBellLight } from "react-icons/pi";
+import Setting from './Setting';
 
 const NavBar = () => {
   const user = useUser();
@@ -26,6 +26,7 @@ const NavBar = () => {
   const [isPersonalListOpen, setIsPersonalListOpen] = useState(false);
   const [isNewPopupOpen, setIsNewPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('task'); // default to 'task' or null
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
 
 
   const handleLogout = async () => {
@@ -65,6 +66,9 @@ const NavBar = () => {
 
   const toggleProfile = () => {
     setIsProfileOpen(!isprofileOpen);
+  };
+  const toggleSetting = () => {
+    setIsSettingOpen(!isSettingOpen);
   };
 
   return (
@@ -257,7 +261,7 @@ const NavBar = () => {
                     <FaUser />
                     {user.name}
                   </li>
-                  <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
+                  <li onClick={toggleSetting} className='px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md flex items-center gap-2'>
                     <FaCog />
                     Settings
                   </li>
@@ -286,8 +290,14 @@ const NavBar = () => {
         </div>
       )}
 
+      {isSettingOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+          <Setting toggleSetting={toggleSetting} toggleMenu={toggleMenu} user = {user}/>
+        </div>
+      )}
 
-      {showNotePad && <NotePad toggleNotePad={toggleNotePad} />}
+
+      {showNotePad && <NotePad toggleNotePad={toggleNotePad} user = {user}/>}
 
 
 

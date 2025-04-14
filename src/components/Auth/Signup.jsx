@@ -80,7 +80,8 @@ function Signup() {
                 email,
                 uid: uid,
                 role: "user",
-                createdAt: new Date()
+                createdAt: new Date(),
+                photoURL :""
             });
         } catch (error) {
             console.error("Error adding user to Firestore:", error);
