@@ -7,6 +7,10 @@ export default {
   theme: {
     extend: {
       keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-100% 0' },
+          '100%': { backgroundPosition: '100% 0' },
+        },
         slideLeft: {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0)' },
@@ -21,6 +25,7 @@ export default {
         },
       },
       animation: {
+        shimmer: 'shimmer 2s infinite linear',
         slideLeft: 'slideLeft 0.5s ease-out forwards',
         slideRight: 'slideRight 0.5s ease-out forwards',
         customPulse: 'customPulse 2s ease-in-out infinite',
@@ -40,4 +45,3 @@ export default {
   },
   plugins: [],
 }
-

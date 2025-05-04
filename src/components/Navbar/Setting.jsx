@@ -53,6 +53,8 @@ const Setting = ({ user, toggleMenu, toggleSetting }) => {
       await updateDoc(userDocRef, { photoURL: imageUrl });
 
       alert('Profile picture updated!');
+      toggleSetting(); 
+      toggleMenu();
     } catch (error) {
       console.error('Upload error:', error);
       alert('Upload failed!');

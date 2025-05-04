@@ -39,7 +39,7 @@ const TeamList = ({ teams, onTeamSelect }) => {
       <Toaster position="top-right" reverseOrder={false} />
 
 
-      <ul className="p-4 space-y-3 relative bg-white rounded-lg shadow-md h-[calc(100vh-190px)] scroll-container overflow-y-auto">
+      <ul className="p-4 space-y-3 relative bg-white rounded-lg shadow-md h-[calc(100vh-170px)] scroll-container overflow-y-auto">
         <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="cross-hatch" width="10" height="10" patternUnits="userSpaceOnUse">

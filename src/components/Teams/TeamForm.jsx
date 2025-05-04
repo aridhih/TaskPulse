@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth, db } from "../../firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, updateDoc, doc } from "firebase/firestore";
 import { useUser } from "../Layout/UserContext";
 
 const TeamForm = ({ onTeamCreated }) => {
@@ -26,6 +26,10 @@ const TeamForm = ({ onTeamCreated }) => {
             };
 
             const docRef = await addDoc(collection(db, "teams"), newTeam);
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                teamId: docRef.id,
+              });
+
             setTeamName("");
             setError("");
             onTeamCreated({ id: docRef.id, ...newTeam }); // Pass new team back to parent
