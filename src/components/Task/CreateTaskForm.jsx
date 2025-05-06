@@ -9,7 +9,7 @@ const CreateTaskForm = ({ users, projects, teamId, toggleNewPopup }) => {
     description: '',
     assignee: '',
     projectId: '',
-    status: 'todo',
+    status: 'To Do',
     priority: 'low',
     startTime: '',
     endTime: '',

@@ -1,5 +1,5 @@
 const Breadcrumb = ({ selectedTeam, selectedProject, onBackToTeams, onBackToProjects }) => (
-    <div className="text-gray-600">
+    <div className="text-gray-600 ml-2">
      
       {selectedTeam && (
         <>

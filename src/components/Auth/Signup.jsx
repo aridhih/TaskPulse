@@ -81,7 +81,9 @@ function Signup() {
                 uid: uid,
                 role: "user",
                 createdAt: new Date(),
-                photoURL :""
+                photoURL :"",
+                isOnline: false,         // gets updated automatically
+                lastActive: Timestamp  
             });
         } catch (error) {
             console.error("Error adding user to Firestore:", error);

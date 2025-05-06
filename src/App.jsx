@@ -4,6 +4,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
 import { UserProvider } from './components/Layout/UserContext';
 import Loader from './components/Loader';
+import usePresence from './hooks/usePresence';
 
 // Lazy-loaded components
 const LandingPage = lazy(() => import('./components/LandingPage/LandingPage'));
@@ -25,38 +26,40 @@ const Teams = lazy(() => import('./components/Teams/Teams'));
 const ProjectTasks = lazy(() => import('./components/Task/ProjectTasks'));
 
 function App() {
+  usePresence();
+
   return (
     <UserProvider>
-        <Router>
-          <Suspense fallback={<Loader />}>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/login/forgotpassword" element={<ForgotPassword />} />
-              <Route path="/login/forgotpassword/emailsent" element={<EmailSent />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/signup/EmailVerification" element={<EmailVerification />} />
-              <Route path="/signup/EmailVerification/RegistrationSuccess" element={<RegistrationSuccess />} />
+      <Router>
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/login/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/login/forgotpassword/emailsent" element={<EmailSent />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup/EmailVerification" element={<EmailVerification />} />
+            <Route path="/signup/EmailVerification/RegistrationSuccess" element={<RegistrationSuccess />} />
 
-              {/* Admin Route */}
-              <Route path="/admin123" element={<AdminPanel />} />
+            {/* Admin Route */}
+            <Route path="/admin123" element={<AdminPanel />} />
 
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/inbox" element={<Inbox />} />
-                <Route path="/clips" element={<ClipsPage />} />
-                <Route path="/docs" element={<DocsPage />} />
-                <Route path="/goals" element={<Goals />} />
-                <Route path="/timesheets" element={<Timesheets />} />
-                <Route path="/pulse" element={<PulsePage />} />
-                <Route path="/teams" element={<Teams />} />
-                <Route path="/projects/:projectId/tasks" element={<ProjectTasks />} />
-\              </Route>
-            </Routes>
-          </Suspense>
-        </Router>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/inbox" element={<Inbox />} />
+              <Route path="/clips" element={<ClipsPage />} />
+              <Route path="/docs" element={<DocsPage />} />
+              <Route path="/goals" element={<Goals />} />
+              <Route path="/timesheets" element={<Timesheets />} />
+              <Route path="/pulse" element={<PulsePage />} />
+              <Route path="/teams" element={<Teams />} />
+              <Route path="/projects/:projectId/tasks" element={<ProjectTasks />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </Router>
     </UserProvider>
   );
 }

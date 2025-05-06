@@ -13,7 +13,6 @@ import { CiSettings } from "react-icons/ci";
 import TeamSettings from './TeamSettings';
 
 
-
 const Teams = () => {
     const [teams, setTeams] = useState([]), [projects, setProjects] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null), [selectedProject, setSelectedProject] = useState(null);
@@ -47,9 +46,9 @@ const Teams = () => {
         fetchTeams();
     }, []);
 
-   const  toggleSettings = () =>  setShowSettings(!showSettings);
-    
-      
+    const toggleSettings = () => setShowSettings(!showSettings);
+
+
     const fetchProjects = async (team) => {
         setProjects([]);
         setLoading(true);
@@ -99,16 +98,17 @@ const Teams = () => {
         setShowProjectForm(false);
         fetchProjects(team);
         setTeamMembers(team.members);
-      };
-      
+    };
+
 
     const handleProjectDeleted = (id) => setProjects(prev => prev.filter(p => p.id !== id));
     const handleTeamCreated = (team) => { setTeams(prev => [...prev, team]); setShowTeamForm(false); };
 
     return (
-        <div className="p-4 border h-full bg-gray-50">
-            <h2 className="relative text-2xl font-bold text-center text-gray-700 mb-4 bg-gray-100 shadow-md p-5 rounded-lg overflow-hidden">
-                Team Space
+        <div className="p-3 shadow-inner border h-full bg-gray-50">
+            <h2 className="relative  text-center mb-3 bg-gray-100 shadow-md p-5 rounded-lg overflow-hidden">
+                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-black to-blue-400 animate-shimmer bg-[length:200%_auto]">
+                    Team Space</p>
                 <svg className="absolute top-0 left-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 20 C30 0, 60 40, 90 20 S150 0, 180 20 S240 40, 270 20" stroke="#A855F7" strokeWidth="4" fill="none" />
                 </svg>
@@ -116,7 +116,6 @@ const Teams = () => {
                     <path d="M0 20 C30 0, 60 40, 90 20 S150 0, 180 20 S240 40, 270 20" stroke="#A855F7" strokeWidth="4" fill="none" />
                 </svg>
             </h2>
-
             <Breadcrumb selectedTeam={selectedTeam} selectedProject={selectedProject}
                 onBackToTeams={() => { setSelectedTeam(null); setSelectedProject(null); setIsCreator(false); }}
                 onBackToProjects={() => { setSelectedProject(null); }} />
@@ -125,23 +124,23 @@ const Teams = () => {
                 <div className="flex justify-center items-center h-20">
                     <div className="animate-spin rounded-full h-10 w-10 border-t-4 mt-48 border-blue-500"></div>
                 </div>
-            ) : selectedTeam  ? (
+            ) : selectedTeam ? (
                 <div>
-                    { !selectedProject ? (
-                    <div className="flex justify-end items-center mt-[-25px]">
-                        {isCreator && (
-                        <div className="flex gap-2 items-center justify-center">
-                            <button onClick={() => setShowProjectForm(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition mb-4">
-                                Create Project
-                            </button>    
-                            <div className='h-7 border-r-2 mb-4'></div> 
-                            <CiSettings className='mb-4 h-7 w-7  rounded p-[2px] cursor-pointer hover:bg-gray-100' onClick={toggleSettings}/>
-                            {showSettings && (
-                                <TeamSettings teamId={selectedTeam.id} teamName={selectedTeam.teamName} teamMembers={teamMembers} toggleSettings={toggleSettings}/>
+                    {!selectedProject ? (
+                        <div className="flex justify-end items-center mt-[-25px]">
+                            {isCreator && (
+                                <div className="flex gap-2 items-center justify-center">
+                                    <button onClick={() => setShowProjectForm(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition mb-4">
+                                        Create Project
+                                    </button>
+                                    <div className='h-7 border-r-2 mb-4'></div>
+                                    <CiSettings className='mb-4 h-7 w-7  rounded p-[2px] cursor-pointer hover:bg-gray-100' onClick={toggleSettings} />
+                                    {showSettings && (
+                                        <TeamSettings teamId={selectedTeam.id} teamName={selectedTeam.teamName} teamMembers={teamMembers} toggleSettings={toggleSettings} />
+                                    )}
+                                </div>
                             )}
-                        </div>
-                        )}
-                    </div>) : null}
+                        </div>) : null}
                     <AnimatePresence mode="wait">
                         {!selectedProject && (
                             <motion.div key="projectList" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}                            >
@@ -151,7 +150,7 @@ const Teams = () => {
 
                         {selectedProject && (
                             <motion.div key="tasksList" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}  >
-                                <TasksList/>
+                                <TasksList />
                             </motion.div>
                         )}
                     </AnimatePresence>
