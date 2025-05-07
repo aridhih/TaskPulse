@@ -128,7 +128,7 @@ const Teams = () => {
                 <div>
                     {!selectedProject ? (
                         <div className="flex justify-end items-center mt-[-25px]">
-                            {isCreator && (
+                            {isCreator ? (
                                 <div className="flex gap-2 items-center justify-center">
                                     <button onClick={() => setShowProjectForm(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition mb-4">
                                         Create Project
@@ -139,7 +139,7 @@ const Teams = () => {
                                         <TeamSettings teamId={selectedTeam.id} teamName={selectedTeam.teamName} teamMembers={teamMembers} toggleSettings={toggleSettings} />
                                     )}
                                 </div>
-                            )}
+                            ): <div className='h-7 mb-2'></div>}
                         </div>) : null}
                     <AnimatePresence mode="wait">
                         {!selectedProject && (

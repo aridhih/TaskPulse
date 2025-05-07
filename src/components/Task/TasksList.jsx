@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
@@ -9,13 +9,12 @@ const TasksList = () => {
   const location = useLocation();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [assignedUsers, setAssignedUsers] = useState({});
-  const [loadingUsers, setLoadingUsers] = useState([]);
-
-
+  const [userDetails, setUserDetails] = useState({});
+  const [loadingUserIds, setLoadingUserIds] = useState([]);
 
   const projectId = searchParams.get('projectId');
 
+  // Fetch tasks and assigned users
   useEffect(() => {
     const fetchTasks = async () => {
       if (!projectId) return;
@@ -27,11 +26,13 @@ const TasksList = () => {
         const tasksData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setTasks(tasksData);
 
+        // Fetch assigned users
         const fetchAssignedUsers = async (tasksData) => {
           const uniqueUIDs = [...new Set(tasksData.map(task => task.assignedTo).filter(Boolean))];
           const usersData = {};
-          setLoadingUsers(uniqueUIDs);
+          setLoadingUserIds(uniqueUIDs);
 
+          // Gather users and update once all users are fetched
           for (const uid of uniqueUIDs) {
             try {
               const userDoc = await getDocs(query(collection(db, 'users'), where('uid', '==', uid)));
@@ -43,9 +44,8 @@ const TasksList = () => {
               console.error(`Error fetching user ${uid}:`, err);
             }
           }
-
-          setAssignedUsers(usersData);
-          setLoadingUsers([]);
+          setUserDetails(usersData);
+          setLoadingUserIds([]);  // Update once all users are fetched
         };
 
         fetchAssignedUsers(tasksData);
@@ -60,9 +60,10 @@ const TasksList = () => {
     fetchTasks();
   }, [projectId, location.search]);
 
+  // Handle task drag and drop
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
-    if (!destination || destination.index === source.index) return;
+    if (!destination || (destination.index === source.index && destination.droppableId === source.droppableId)) return;
 
     const task = tasks.find(t => t.id === draggableId);
     if (!task) {
@@ -84,16 +85,48 @@ const TasksList = () => {
 
     } catch (err) {
       console.error("❌ Firestore update failed:", err.message);
-
     }
   };
 
+  // Handle manual status change
+  const handleStatusChange = async (taskId, newStatus) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) {
+      console.warn("Task not found for ID:", taskId);
+      return;
+    }
 
-  const getTasksByStatus = (status) => {
-    return tasks.filter(task => task.status === status);
+    const updatedTask = { ...task, status: newStatus };
+
+    try {
+      const taskRef = doc(db, 'tasks', taskId);
+      await updateDoc(taskRef, { status: newStatus });
+
+      setTasks(prev =>
+        prev.map(t => (t.id === taskId ? updatedTask : t))
+      );
+
+    } catch (err) {
+      console.error("❌ Firestore update failed:", err.message);
+    }
   };
 
-  const statuses = ['To Do', 'In Progress', 'Completed'];
+  // Memoize tasks by status
+  const tasksByStatus = useMemo(() => {
+    const tasksByStatus = {};
+    const statuses = ['To Do', 'In Progress', 'Completed'];
+    statuses.forEach(status => {
+      tasksByStatus[status] = tasks.filter(task => task.status === status);
+    });
+    return tasksByStatus;
+  }, [tasks]);
+
+  // Task priority colors
+  const priorityColors = {
+    high: 'bg-red-500',
+    medium: 'bg-yellow-500',
+    low: 'bg-green-500',
+  };
 
   return (
     <div className="mt-4">
@@ -104,37 +137,30 @@ const TasksList = () => {
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex space-x-4">
-            {statuses.map(status => (
+            {['To Do', 'In Progress', 'Completed'].map(status => (
               <Droppable droppableId={status} key={status}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`w-1/3 bg-white rounded-lg p-4 shadow-inner h-[380px] border overflow-y-auto transition-colors duration-300 ease-in-out ${snapshot.isDraggingOver ? 'bg-blue-100 border-blue-400 shadow-lg' : ''}                    `}
+                    className={`w-1/3 bg-white rounded-lg p-4 shadow-lg h-[380px] border overflow-y-auto transition-colors duration-300 ease-in-out ${snapshot.isDraggingOver ? 'bg-blue-100 border-blue-400 shadow-xl' : ''}`}
                   >
-                    <h2 className="text-xl font-bold mb-2">{status}</h2>
-                    {getTasksByStatus(status).map((task, index) => (
+                    <h2 className="text-lg font-medium text-gray-800 mb-2">{status}</h2>
+                    {tasksByStatus[status].map((task, index) => (
                       <Draggable draggableId={task.id} index={index} key={task.id}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`bg-gray-50 p-4 mb-2 rounded shadow border-l-4 ${snapshot.isDragging ? 'bg-blue-200' : ''
-                              } ${new Date(task.deadline) < new Date()
-                                ? 'border-red-500'
-                                : new Date(task.deadline) < new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                                  ? 'border-yellow-400'
-                                  : 'border-green-400'
-                              }`}
+                            className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-105 hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
                           >
-
-                            <div className="font-semibold text-lg">{task.title}</div>
-                            <div className="text-gray-600 mb-1">{task.description}</div>
+                            <div className="font-medium text-sm text-gray-900">{task.title}</div>
+                            <div className="text-sm text-gray-500 mb-1">{task.description}</div>
 
                             {/* Deadline display */}
                             {task.deadline && (
-                              <div className="text-sm mb-1 text-gray-500">
+                              <div className="text-xs text-gray-400 mb-1">
                                 ⏰ Deadline:{" "}
                                 <span className={new Date(task.deadline) < new Date() ? "text-red-500" : "text-green-600"}>
                                   {new Date(task.deadline).toLocaleDateString()}
@@ -143,15 +169,10 @@ const TasksList = () => {
                             )}
 
                             {/* Priority indicator */}
-                            <div className="text-sm mb-1">
+                            <div className="text-xs mb-1">
                               Priority:{" "}
                               <span
-                                className={`px-2 py-0.5 rounded text-white ${task.priority === 'high'
-                                  ? 'bg-red-600'
-                                  : task.priority === 'medium'
-                                    ? 'bg-yellow-500'
-                                    : 'bg-green-500'
-                                  }`}
+                                className={`px-2 py-0.5 rounded text-white ${priorityColors[task.priority] || 'bg-gray-500'}`}
                               >
                                 {task.priority}
                               </span>
@@ -159,24 +180,24 @@ const TasksList = () => {
 
                             {/* Assigned user */}
                             {task.assignedTo && (
-                              <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                              <div className="flex items-center gap-2 mt-1 text-xs text-gray-600">
                                 Assigned to:
-                                {loadingUsers.includes(task.assignedTo) ? (
-                                  <div className="w-6 h-6 border-2 border-blue-400 border-t-transparent animate-spin rounded-full"></div>
-                                ) : assignedUsers[task.assignedTo] ? (
-                                  assignedUsers[task.assignedTo].photoURL ? (
+                                {loadingUserIds.includes(task.assignedTo) ? (
+                                  <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent animate-spin rounded-full"></div>
+                                ) : userDetails[task.assignedTo] ? (
+                                  userDetails[task.assignedTo].photoURL ? (
                                     <img
-                                      src={assignedUsers[task.assignedTo].photoURL}
+                                      src={userDetails[task.assignedTo].photoURL}
                                       alt="User"
-                                      className="w-6 h-6 rounded-full object-cover"
-                                      title={assignedUsers[task.assignedTo].name.toUpperCase()}
+                                      className="w-5 h-5 rounded-full object-cover"
+                                      title={userDetails[task.assignedTo].name.toUpperCase()}
                                     />
                                   ) : (
                                     <div
-                                      className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                      title={assignedUsers[task.assignedTo].name.toUpperCase()}
+                                      className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                      title={userDetails[task.assignedTo].name.toUpperCase()}
                                     >
-                                      {assignedUsers[task.assignedTo].name
+                                      {userDetails[task.assignedTo].name
                                         .split(' ')
                                         .map(n => n[0])
                                         .join('')
@@ -187,10 +208,21 @@ const TasksList = () => {
                               </div>
                             )}
 
-
-
+                            {/* Manual status change */}
+                            <div className="mt-2">
+                              <label htmlFor={`status-select-${task.id}`} className="text-xs text-gray-500">Change Status</label>
+                              <select
+                                id={`status-select-${task.id}`}
+                                value={task.status}
+                                onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                                className="mt-1 p-1 border rounded-md w-full text-sm"
+                              >
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                              </select>
+                            </div>
                           </div>
-
                         )}
                       </Draggable>
                     ))}
