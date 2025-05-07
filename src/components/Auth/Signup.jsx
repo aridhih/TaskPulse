@@ -83,7 +83,7 @@ function Signup() {
                 createdAt: new Date(),
                 photoURL :"",
                 isOnline: false,         // gets updated automatically
-                lastActive: Timestamp  
+                lastActive: new Date()  
             });
         } catch (error) {
             console.error("Error adding user to Firestore:", error);

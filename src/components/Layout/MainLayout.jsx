@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom"; // To render child routes
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../Navbar/NavBar";
 import SideBar from "../SideBar/SideBar";
 import Loader from "../Loader";
 import { useAuthState } from "react-firebase-hooks/auth";

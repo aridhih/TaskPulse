@@ -1,34 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SiGoogledocs } from "react-icons/si";
 import { FaDownload } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import { FaTrashAlt } from "react-icons/fa";
+import { db } from "../../../firebase";
+import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "firebase/firestore";
 import { AiOutlineShareAlt } from "react-icons/ai";
+
 
 const DocsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [docs, setDocs] = useState([]); // Initializing with an empty array
+  const [docs, setDocs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [docName, setDocName] = useState("");
   const [docDescription, setDocDescription] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedDocIndex, setSelectedDocIndex] = useState(null);
+  const [docFile, setDocFile] = useState(null);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleSubmit = (e) => {
+
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dndvfynfo/upload";
+  const CLOUDINARY_UPLOAD_PRESET = "docs_preset";
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (docName && docDescription) {
+    if (!docName || !docFile) {
+      alert("Document name and file are required.");
+      return;
+    }
+
+    try {
+      // Upload to Cloudinary
+      const formData = new FormData();
+      formData.append("file", docFile);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+      const cloudinaryRes = await fetch(CLOUDINARY_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      const cloudinaryData = await cloudinaryRes.json();
+
+      if (!cloudinaryData.secure_url) throw new Error("Upload failed");
+
+      // Save metadata to Firestore
       const newDoc = {
         name: docName,
         description: docDescription,
+        fileUrl: cloudinaryData.secure_url,
+        fileType: docFile.type,
+        createdAt: serverTimestamp(),
+        createdBy: "userId", // replace with actual user ID
+        projectId: "projectId", // replace with selected project
       };
-      setDocs([...docs, newDoc]);
-      setDocName(""); // Resetting form inputs
+
+      await addDoc(collection(db, "docs"), newDoc);
+
+      // UI Updates
+      setDocs([...docs, { ...newDoc, createdAt: new Date() }]);
+      setDocName("");
       setDocDescription("");
-      handleCloseModal(); // Close modal after submission
+      setDocFile(null);
+      handleCloseModal();
+    } catch (err) {
+      console.error("Error uploading doc:", err);
+      alert("Upload failed. Please try again.");
     }
   };
 
@@ -63,14 +105,31 @@ const DocsPage = () => {
     handlePopupClose();
   };
 
+
+
+  useEffect(() => {
+    const q = query(collection(db, "docs"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedDocs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date()
+      }));
+      setDocs(fetchedDocs);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="h-[calc(100vh-50px)] w-full border border-gray-200 rounded-b-lg bg-white">
+      {/* Top Bar */}
       <div className="h-[54px] w-full border-b text-textPrimary border-gray-200 bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 justify-between flex items-center">
         <div className="flex items-center gap-1 ml-1">
           <SiGoogledocs />
           <p className="text-[13px] cursor-default font-[cursive]">Docs</p>
         </div>
-
         <div className="flex items-center relative p-2 gap-2">
           <button
             className="bg-blue-600 hover:bg-blue-700 shadow-lg rounded h-8 py-1 px-2 text-white"
@@ -81,52 +140,66 @@ const DocsPage = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Content */}
       <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-4 bg-white overflow-y-scroll hide-scrollbar">
         <div className="grid grid-cols-2 gap-3 my-3">
-          {/* Render Docs */}
-          {docs.length === 0 ? (
-            <div className=" w-full p-4 flex flex-col gap-6 bg-white overflow-y-scroll hide-scrollbar">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="p-4 border cursor-pointer border-gray-200 hover:shadow-gray-200 rounded bg-white shadow" >
-                  <h3 className="text-lg font-semibold text-navbar">Record in a snap</h3>
-                  <p className="text-sm text-surface">Capture your device's screen with just a few clicks. Record and effortlessly share your videos with anyone.
-                  </p>
-                </div>
-                <div className="p-4 border cursor-pointer border-gray-200 hover:shadow-gray-200 rounded bg-white shadow" >
-                  <h3 className="text-lg font-semibold text-navbar">Unlock async productivity</h3>
-                  <p className="text-sm text-surface">Skip the meetings and share all of your design updates, feedback videos, onboarding videos, and more in one place.
-                  </p>
-                </div>
-                <div className="p-4 border cursor-pointer hover:shadow-gray-200 border-gray-200 rounded bg-white shadow" >
-                  <h3 className="text-lg font-semibold text-navbar">Watch, share, collaborate</h3>
-                  <p className="text-sm text-surface">Clips automatically generate a link, allowing you to quickly share your clips anywhere, even outside of your Workspace.
-                  </p>
-                </div>
-              </div>
-              <p>No documents available. Create one to start!</p>
+          {loading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <p className="text-sm text-gray-500">Loading documents...</p>
+            </div>
+          ) : docs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center col-span-2 mt-20">
+              <img
+                src="https://res.cloudinary.com/demo/image/upload/dndvfynfo/empty_docs.svg"
+                alt="No documents"
+                className="w-60 h-60 opacity-70"
+              />
+              <h3 className="text-xl font-semibold mt-4 text-gray-700">No documents yet</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Start by creating your first document to share, store, or collaborate.
+              </p>
+              <button
+                onClick={handleOpenModal}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+              >
+                Create Document
+              </button>
             </div>
           ) : (
             docs.map((doc, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-2 border border-gray-200 rounded bg-white shadow"
+                className="border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md bg-white flex flex-col justify-between"
               >
-                <div className="flex items-center gap-2">
-                  <SiGoogledocs className="text-blue-500" />
-                  <p className="text-[13px] cursor-default font-[cursive]">{doc.name}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button className="flex items-center gap-1 text-blue-500 hover:text-blue-700">
-                    <FaDownload />
-                    <span className="text-[12px]">Download</span>
-                  </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <SiGoogledocs className="text-blue-600 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-800">{doc.name}</h4>
+                      <p className="text-xs text-gray-500">{doc.description}</p>
+                    </div>
+                  </div>
                   <button
-                    className="text-gray-600 hover:text-gray-800"
+                    className="text-gray-500 hover:text-gray-800"
                     onClick={() => handlePopupOpen(index)}
                   >
                     <BsThreeDots />
                   </button>
+                </div>
+
+                <div className="flex justify-between items-center mt-3">
+                  <p className="text-xs text-gray-400">
+                    {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : "—"}
+                  </p>
+                  <a
+                    href={doc.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 text-sm hover:underline flex items-center gap-1"
+                  >
+                    <FaDownload />
+                    <span>Download</span>
+                  </a>
                 </div>
               </div>
             ))
@@ -153,37 +226,50 @@ const DocsPage = () => {
             <h2 className="text-lg font-semibold mb-4">Create Document</h2>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div>
-                <label className="text-sm">Document Name</label>
+                <label className="text-sm">Select File <span className="text-red-500">*</span></label>
+                <input
+                  type="file"
+                  className="w-full border p-2 rounded"
+                  accept=".txt,.zip,.pdf,.docx,.js,.py,.html,.css,.json"
+                  onChange={(e) => setDocFile(e.target.files[0])}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-sm">Document Name <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   className="w-full border p-2 rounded"
                   placeholder="Enter document name"
                   value={docName}
                   onChange={(e) => setDocName(e.target.value)}
+                  required
                 />
               </div>
+
               <div>
                 <label className="text-sm">Description</label>
                 <textarea
                   className="w-full border p-2 rounded"
-                  placeholder="Enter description"
-                  rows="4"
+                  placeholder="Short description"
                   value={docDescription}
                   onChange={(e) => setDocDescription(e.target.value)}
                 />
               </div>
+
               <button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-4"
               >
-                Submit
+                Upload Document
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* Popup for Rename, Delete, Share */}
+      {/* Popup Menu */}
       {popupVisible && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
