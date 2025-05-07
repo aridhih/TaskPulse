@@ -101,7 +101,15 @@ const Teams = () => {
     };
 
 
-    const handleProjectDeleted = (id) => setProjects(prev => prev.filter(p => p.id !== id));
+    const handleProjectDeleted = (id) => {
+        setProjects(prev => prev.filter(p => p.id !== id));
+        if (selectedProject?.id === id) {
+            setSelectedProject(null);
+            const params = new URLSearchParams(location.search);
+            params.delete("projectId");
+            navigate({ search: params.toString() }, { replace: true });
+        }
+    };
     const handleTeamCreated = (team) => { setTeams(prev => [...prev, team]); setShowTeamForm(false); };
 
     return (
@@ -139,7 +147,7 @@ const Teams = () => {
                                         <TeamSettings teamId={selectedTeam.id} teamName={selectedTeam.teamName} teamMembers={teamMembers} toggleSettings={toggleSettings} />
                                     )}
                                 </div>
-                            ): <div className='h-7 mb-2'></div>}
+                            ) : <div className='h-7 mb-2'></div>}
                         </div>) : null}
                     <AnimatePresence mode="wait">
                         {!selectedProject && (
@@ -157,8 +165,11 @@ const Teams = () => {
 
 
                     {isCreator && showProjectForm && (
-                        <ProjectForm projectName={projectName} setProjectName={setProjectName} error={error} handleCreateProject={handleCreateProject} />
+                        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-[1px] bg-slate-50 bg-opacity-50 z-50">
+                            <ProjectForm projectName={projectName} setProjectName={setProjectName} setShowProjectForm={setShowProjectForm} error={error} handleCreateProject={handleCreateProject} />
+                        </div>
                     )}
+
                 </div>
             ) : firebaseError ? (
                 <div className="h-[80%] flex justify-center items-center">

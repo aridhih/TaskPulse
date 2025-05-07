@@ -29,14 +29,14 @@ const TeamSettings = ({ teamId, teamMembers: initialMembers, toggleSettings, tea
         }
     }, [teamMembers]);
 
-    const handleRemoveMember = async (uid) => {
+    const  handleRemoveMember = async (uid) => {
         const confirm = window.confirm("Are you sure you want to remove this member?");
         if (!confirm) return;
 
         try {
             const teamRef = doc(db, 'teams', teamId);
             const updatedMembers = teamMembers.filter(member => member !== uid);
-            await updateDoc(teamRef, { teamMember: updatedMembers });
+            await updateDoc(teamRef, { members: updatedMembers });
             setTeamMembers(updatedMembers);
         } catch (err) {
             console.error("Failed to remove member:", err);
@@ -117,7 +117,7 @@ const TeamSettings = ({ teamId, teamMembers: initialMembers, toggleSettings, tea
                                     {isCreator && !isCurrentUser && (
                                         <button
                                             onClick={() => handleRemoveMember(user.uid)}
-                                            className="text-red-600 ml-2 hover:underline"
+                                            className="text-red-600 mr-2 hover:underline "
                                         >
                                             Remove
                                         </button>

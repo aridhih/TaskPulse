@@ -100,7 +100,7 @@ const Home = () => {
       <div className="h-[calc(100vh-105px)] w-full p-4 flex flex-col gap-4 bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {uiState.isToggled && user && (
           <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-black to-blue-400 animate-shimmer bg-[length:200%_auto]">
-            {`${greeting}, ${user.name.charAt(0).toUpperCase()}${user.name.slice(1)}`}
+            {`${greeting}, ${user?.name?.charAt(0).toUpperCase()}${user?.name?.slice(1)}`}
           </p>
         )}
         <div className="grid grid-cols-2 gap-3 my-3">

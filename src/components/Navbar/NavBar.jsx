@@ -156,7 +156,7 @@ const NavBar = () => {
           <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-violet-600 blur-sm animate-customPulse" />
             <div className="relative z-10 text-white font-semibold">
-              {user ? user.name.slice(0, 2).toUpperCase() : <FaUserCircle className='h-10 w-10' />}
+              {user ? user?.name?.slice(0, 2).toUpperCase() : <FaUserCircle className='h-10 w-10' />}
             </div>
           </div>
           {isMenuOpen && (
