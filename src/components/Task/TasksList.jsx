@@ -153,7 +153,7 @@ const TasksList = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-105 hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
+                            className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-[1.01] hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
                           >
                             <div className="font-medium text-sm text-gray-900">{task.title}</div>
                             <div className="text-sm text-gray-500 mb-1">{task.description}</div>

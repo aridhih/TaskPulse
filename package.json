@@ -20,6 +20,7 @@
     "axios": "^1.8.4",
     "chart.js": "^4.4.7",
     "cloudinary-react": "^1.8.1",
+    "date-fns": "^4.1.0",
     "firebase": "^11.5.0",
     "framer-motion": "^12.6.2",
     "moment": "^2.30.1",

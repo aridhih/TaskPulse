@@ -32,7 +32,6 @@ const NavBar = () => {
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showNote, setShowNote] = useState(false);
   const [activeTab, setActiveTab] = useState('task');
   const [searchTerm, setSearchTerm] = useState('');
   const [showResults, setShowResults] = useState(false);
@@ -141,15 +140,8 @@ const NavBar = () => {
 
         <button className='p-1 rounded-md text-textPrimary hover:text-white font-semibold' onClick={() => toggleModal("form")}>Daily Standup</button>
 
-        <div className='p-2 rounded-md relative text-textPrimary hover:text-white cursor-pointer'
-          onMouseEnter={() => setShowNote(true)} onMouseLeave={() => setShowNote(false)}>
+        <div className='p-2 rounded-md relative text-textPrimary hover:text-white cursor-pointer' title='Write a note'>
           <LuNotebookPen onClick={() => toggleModal("notePad")} />
-          {showNote && (
-            <div className="absolute z-50 top-[40px] right-[-22px] w-fit p-1 bg-white border border-gray-200 rounded-md shadow-lg text-xs text-surface text-center">
-              <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-200 absolute top-[-10px] right-[40%]" />
-              Write a note
-            </div>
-          )}
         </div>
 
         <div className='relative'>
