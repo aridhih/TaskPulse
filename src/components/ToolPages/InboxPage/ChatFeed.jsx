@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../../firebase';
-import {  collection,  query,  orderBy,  onSnapshot,  addDoc,  serverTimestamp,} from 'firebase/firestore';
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { format } from 'date-fns';
 
-const ChatFeed = ({ teamId, currentUser, usersMap }) => {
+const ChatFeed = ({ teamId, teamName, teamMembers = [], currentUser, usersMap }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [showMembers, setShowMembers] = useState(false);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     if (!teamId) return;
@@ -15,6 +24,10 @@ const ChatFeed = ({ teamId, currentUser, usersMap }) => {
     );
     return () => unsubscribe();
   }, [teamId]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -32,9 +45,32 @@ const ChatFeed = ({ teamId, currentUser, usersMap }) => {
     ts?.toDate ? format(ts.toDate(), 'p | MMM d, yyyy') : 'Sending...';
 
   return (
-    <div className="w-full h-full flex flex-col gap-2 bg-white rounded shadow p-4 overflow-y-auto">
-      <h2 className="text-lg font-semibold border-b pb-2">Team Chat</h2>
-      <div className="flex-1 overflow-y-auto space-y-3">
+    <div className="w-full h-full flex flex-col bg-white rounded shadow overflow-hidden">
+      {/* Header */}
+      <div className="flex justify-between items-center px-4 py-2 border-b bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+        <h2 className="text-lg font-semibold">{teamName || 'Team Chat'}</h2>
+        <button
+          onClick={() => setShowMembers((prev) => !prev)}
+          className="text-xs underline hover:text-gray-200"
+        >
+          {showMembers ? 'Hide Members' : 'View Members'}
+        </button>
+      </div>
+
+      {/* Member List */}
+      {showMembers && (
+        <div className="px-4 py-2 text-sm bg-gray-50 border-b max-h-40 overflow-y-auto">
+          <ul className="list-disc list-inside">
+            {teamMembers.map((uid) => {
+              const user = getUser(uid);
+              return <li key={uid}>{user.name}</li>;
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg) => {
           const user = getUser(msg.senderId);
           const isCurrentUser = msg.senderId === currentUser.uid;
@@ -43,8 +79,8 @@ const ChatFeed = ({ teamId, currentUser, usersMap }) => {
             <div key={msg.id} className={`flex gap-2 items-start ${isCurrentUser ? 'justify-end' : ''}`}>
               {!isCurrentUser && (
                 <div className="h-8 w-8 flex items-center justify-center rounded-full bg-blue-400 text-white font-bold">
-                  {user.profilePic ? (
-                    <img src={user.profilePic} alt={user.name} className="h-8 w-8 rounded-full object-cover" />
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.name} className="h-8 w-8 rounded-full object-cover" />
                   ) : (
                     initials
                   )}
@@ -58,9 +94,11 @@ const ChatFeed = ({ teamId, currentUser, usersMap }) => {
             </div>
           );
         })}
+        <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSend} className="mt-4 flex">
+      {/* Input Field */}
+      <form onSubmit={handleSend} className="p-2 flex border-t">
         <input
           type="text"
           value={newMessage}
