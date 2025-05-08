@@ -170,7 +170,7 @@ const NavBar = () => {
 
       {modals.form && (
         <Modal>
-          <div className="bg-white h-[80%] p-2 rounded-md shadow-lg w-[90%] max-w-md flex items-center justify-center">
+          <div className="bg-white h-[88%] p-2 rounded-md shadow-lg w-[90%] max-w-md flex items-center justify-center">
             <DailyStandUp closeForm={() => toggleModal("form")} user={user} />
           </div>
         </Modal>

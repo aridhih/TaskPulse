@@ -9,7 +9,6 @@ import StandupFeed from './StandupFeed';
 const Inbox = () => {
   const currentUser = auth.currentUser;
   const [activeTab, setActiveTab] = useState('Personal');
-  const [isChannelOpen, setIsChannelOpen] = useState(false);
   const [teams, setTeams] = useState([]);
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -38,11 +37,6 @@ const Inbox = () => {
     fetchTeams();
   }, [currentUser]);
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-    setIsChannelOpen(tab === 'Channel');
-  };
-
   const handleTeamSelect = (teamId) => {
     const team = teams.find((t) => t.id === teamId);
     setSelectedTeamId(teamId);
@@ -59,11 +53,13 @@ const Inbox = () => {
             <p className="text-[13px] font-[cursive] cursor-default border-textSecondary border-r-2 pr-4">Inbox</p>
           </div>
           <div className="flex gap-2 ml-2">
-            {['Personal', 'Teams'].map((tab) => (
+            {['Personal', 'Teams', 'Standups'].map((tab) => (
               <div key={tab} className={activeTab === tab ? 'border-b-2 border-textPrimary' : ''}>
                 <button
-                  onClick={() => handleTabClick(tab)}
-                  className={`text-base font-semibold p-1 m-1 hover:text-textPrimary rounded ${activeTab === tab ? 'text-textPrimary' : 'text-textSecondary'}`}
+                  onClick={() => setActiveTab(tab)}
+                  className={`text-base font-semibold p-1 m-1 hover:text-textPrimary rounded ${
+                    activeTab === tab ? 'text-textPrimary' : 'text-textSecondary'
+                  }`}
                 >
                   {tab}
                 </button>
@@ -71,62 +67,89 @@ const Inbox = () => {
             ))}
           </div>
         </div>
-        <button
-          onClick={() => handleTabClick('Channel')}
-          className={`rounded font-semibold p-1 m-1 font-[cursive] ${isChannelOpen ? 'underline' : 'hover:underline'}`}
-        >
-          Channel
-        </button>
       </div>
 
       {/* Content */}
       <div className="h-[calc(100vh-113px)] w-full flex bg-gray-50">
-        {!isChannelOpen ? (
-          activeTab === 'Teams' ? (
-            <div className="flex w-full h-full">
-              {/* Sidebar: Team List */}
-              <div className="w-1/3 border-r overflow-y-auto">
-                <h3 className="p-4 font-semibold border-b">Your Teams</h3>
-                {teams.length === 0 ? (
-                  <p className="p-4 text-gray-500 italic">You are not part of any teams.</p>
-                ) : (
-                  teams.map((team) => (
-                    <div
-                      key={team.id}
-                      onClick={() => handleTeamSelect(team.id)}
-                      className={`p-4 cursor-pointer text-black hover:bg-blue-100 ${selectedTeamId === team.id ? 'bg-blue-200 font-bold' : ''}`}
-                    >
-                      {team?.teamName || team?.name}
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Main Chat Area */}
-              <div className="flex-1 p-4">
-                {selectedTeamId ? (
-                  <ChatFeed
-                    teamId={selectedTeamId}
-                    teamName={selectedTeam?.teamName || selectedTeam?.name}
-                    teamMembers={selectedTeam?.members}
-                    currentUser={currentUser}
-                    usersMap={usersMap}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500 italic">
-                    Select a team to start chatting.
+        {activeTab === 'Teams' ? (
+          <div className="flex w-full h-full">
+            {/* Sidebar: Team List */}
+            <div className="w-1/3 border-r overflow-y-auto">
+              <h3 className="p-4 font-semibold border-b">Your Teams</h3>
+              {teams.length === 0 ? (
+                <p className="p-4 text-gray-500 italic">You are not part of any teams.</p>
+              ) : (
+                teams.map((team) => (
+                  <div
+                    key={team.id}
+                    onClick={() => handleTeamSelect(team.id)}
+                    className={`p-4 cursor-pointer text-black hover:bg-blue-100 ${
+                      selectedTeamId === team.id ? 'bg-blue-200 font-bold' : ''
+                    }`}
+                  >
+                    {team?.teamName || team?.name}
                   </div>
-                )}
-              </div>
+                ))
+              )}
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center w-full">
-              <MdMoveToInbox className="h-12 w-12 text-textSecondary" />
-              <p>You don't have any notifications</p>
+
+            {/* Main Chat Area */}
+            <div className="flex-1">
+              {selectedTeamId ? (
+                <ChatFeed
+                  teamId={selectedTeamId}
+                  teamName={selectedTeam?.teamName || selectedTeam?.name}
+                  teamMembers={selectedTeam?.members}
+                  currentUser={currentUser}
+                  usersMap={usersMap}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500 italic">
+                  Select a team to start chatting.
+                </div>
+              )}
             </div>
-          )
+          </div>
+         ) : activeTab === 'Standups' ? (
+          <div className="flex w-full h-full">
+            {/* Sidebar: Team List */}
+            <div className="w-1/3 border-r overflow-y-auto">
+              <h3 className="p-4 font-semibold border-b">Your Teams</h3>
+              {teams.length === 0 ? (
+                <p className="p-4 text-gray-500 italic">You are not part of any teams.</p>
+              ) : (
+                teams.map((team) => (
+                  <div
+                    key={team.id}
+                    onClick={() => handleTeamSelect(team.id)}
+                    className={`p-4 cursor-pointer text-black hover:bg-blue-100 ${
+                      selectedTeamId === team.id ? 'bg-blue-200 font-bold' : ''
+                    }`}
+                  >
+                    {team?.teamName || team?.name}
+                  </div>
+                ))
+              )}
+            </div>
+            {/* Main Standup Feed Area */}
+            <div className="flex-1">
+              {selectedTeamId ? (
+                <StandupFeed
+                  teamId={selectedTeamId}
+                  teamName={selectedTeam?.teamName || selectedTeam?.name}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500 italic">
+                  Select a team to view standups.
+                </div>
+              )}
+            </div>
+          </div>
         ) : (
-          <StandupFeed />
+          <div className="flex flex-col items-center justify-center w-full">
+            <MdMoveToInbox className="h-12 w-12 text-textSecondary" />
+            <p>You don't have any notifications</p>
+          </div>
         )}
       </div>
     </div>
