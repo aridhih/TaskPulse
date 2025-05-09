@@ -5,7 +5,7 @@ import { db } from "../../firebase";
 import toast, { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ProjectList = ({ projects, isCreator, onProjectDeleted ,onProjectClick}) => {
+const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick }) => {
   const [confirmDel, setConfirmDel] = useState(null);
 
   const handleDeleteProject = async (projectId) => {
@@ -27,14 +27,17 @@ const ProjectList = ({ projects, isCreator, onProjectDeleted ,onProjectClick}) =
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      <ul className="p-4 space-y-3 bg-white rounded-lg shadow-inner h-[365px] border overflow-y-auto">
+      <ul className="p-4 space-y-3 bg-white rounded-lg shadow-inner h-[380px] border overflow-y-auto">
         {projects.length > 0 ? (
           projects.map((project) => (
             <li
               key={project.id}
               className="p-4 bg-gray-50 rounded-lg flex items-center justify-between shadow-sm hover:bg-gray-100 cursor-pointer transition"
-              onClick={() => onProjectClick(project)}
-              >
+              onClick={() => {
+                if (confirmDel === null) { onProjectClick(project); }
+              }}
+
+            >
               <p>
                 {project.projectName} (Status:{" "}
                 <span className="text-gray-600">{project.status}</span>)

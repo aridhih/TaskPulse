@@ -24,6 +24,8 @@ const Teams = () => {
     const [error, setError] = useState(''), [firebaseError, setFirebaseError] = useState(null);
     const [showSettings, setShowSettings] = useState(false);
     const [teamMembers, setTeamMembers] = useState([]);
+    const [creating, setCreating] = useState(false);
+
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -68,6 +70,7 @@ const Teams = () => {
         if (!projectName.trim()) return setError("Project name cannot be empty.");
         if (!auth.currentUser || !selectedTeam || !isCreator) return;
         try {
+            setCreating(true);
             const newProject = {
                 projectName: projectName.trim(),
                 teamId: selectedTeam.id,
@@ -83,6 +86,9 @@ const Teams = () => {
             setError('');
         } catch (error) {
             console.error("Error creating project:", error);
+        }
+        finally {
+            setCreating(false);
         }
     };
     const handleProjectClick = (project) => {
@@ -103,13 +109,16 @@ const Teams = () => {
 
     const handleProjectDeleted = (id) => {
         setProjects(prev => prev.filter(p => p.id !== id));
-        if (selectedProject?.id === id) {
+    
+        // If the deleted project was selected, clear it
+        if (selectedProject && selectedProject.id === id) {
             setSelectedProject(null);
             const params = new URLSearchParams(location.search);
             params.delete("projectId");
             navigate({ search: params.toString() }, { replace: true });
         }
     };
+    
     const handleTeamCreated = (team) => { setTeams(prev => [...prev, team]); setShowTeamForm(false); };
 
     return (
@@ -156,7 +165,7 @@ const Teams = () => {
                             </motion.div>
                         )}
 
-                        {selectedProject && (
+                        {selectedProject && projects.some(p => p.id === selectedProject.id) && (
                             <motion.div key="tasksList" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}  >
                                 <TasksList />
                             </motion.div>
@@ -166,7 +175,7 @@ const Teams = () => {
 
                     {isCreator && showProjectForm && (
                         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-[1px] bg-slate-50 bg-opacity-50 z-50">
-                            <ProjectForm projectName={projectName} setProjectName={setProjectName} setShowProjectForm={setShowProjectForm} error={error} handleCreateProject={handleCreateProject} />
+                            <ProjectForm projectName={projectName} creating={creating} setProjectName={setProjectName} setShowProjectForm={setShowProjectForm} error={error} handleCreateProject={handleCreateProject} />
                         </div>
                     )}
 
