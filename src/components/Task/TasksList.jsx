@@ -3,6 +3,8 @@ import { useSearchParams, useLocation } from 'react-router-dom';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import TaskListDetail from './TaskListDetail';
+
 
 const TasksList = () => {
   const [searchParams] = useSearchParams();
@@ -11,7 +13,7 @@ const TasksList = () => {
   const [loading, setLoading] = useState(true);
   const [userDetails, setUserDetails] = useState({});
   const [loadingUserIds, setLoadingUserIds] = useState([]);
-
+  const [selectedTask, setSelectedTask] = useState(null);
   const projectId = searchParams.get('projectId');
 
   // Fetch tasks and assigned users
@@ -135,6 +137,16 @@ const TasksList = () => {
           <div className="animate-spin rounded-full h-10 w-10 border-t-4 mt-48 border-blue-500"></div>
         </div>
       ) : (
+      <>
+         {/* Render TaskListDetail modal if a task is selected */}
+         {selectedTask && (
+            <TaskListDetail
+              task={selectedTask}
+              assignedUser={userDetails[selectedTask.assignedTo]}
+              onClose={() => setSelectedTask(null)}
+              onStatusChange={handleStatusChange}  // Close the modal
+            />
+          )}
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex space-x-4">
             {['To Do', 'In Progress', 'Completed'].map(status => (
@@ -153,7 +165,9 @@ const TasksList = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            onClick={() => setSelectedTask(task)} 
                             className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-105 hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
+                            
                           >
                             <div className="font-medium text-sm text-gray-900">{task.title}</div>
                             <div className="text-sm text-gray-500 mb-1">{task.description}</div>
@@ -209,11 +223,14 @@ const TasksList = () => {
                             )}
 
                             {/* Manual status change */}
-                            <div className="mt-2">
-                              <label htmlFor={`status-select-${task.id}`} className="text-xs text-gray-500">Change Status</label>
+                            <div className="mt-2" >
+  
+                              <label htmlFor={`status-select-${task.id}`} className="text-xs text-gray-500"  onClick={(e) => e.stopPropagation()}>Change Status</label>
                               <select
                                 id={`status-select-${task.id}`}
                                 value={task.status}
+                                onClick={(e) => e.stopPropagation()}
+                                // onChange={(e) => handleStatusChange(task.id, e.target.value)}
                                 onChange={(e) => handleStatusChange(task.id, e.target.value)}
                                 className="mt-1 p-1 border rounded-md w-full text-sm"
                               >
@@ -233,6 +250,7 @@ const TasksList = () => {
             ))}
           </div>
         </DragDropContext>
+        </>
       )}
     </div>
   );
