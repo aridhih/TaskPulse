@@ -1,19 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { db } from '../../../firebase';
-import {
-    collection,
-    query,
-    orderBy,
-    onSnapshot,
-    addDoc,
-    serverTimestamp,
-} from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { format } from 'date-fns';
+import { FaTrash } from 'react-icons/fa';
 
-const ChatFeed = ({ teamId, teamName, teamMembers = [], currentUser, usersMap }) => {
+const ChatFeed = ({ teamId, currentUser, getUser }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [showMembers, setShowMembers] = useState(false);
     const bottomRef = useRef(null);
 
     useEffect(() => {
@@ -40,53 +33,35 @@ const ChatFeed = ({ teamId, teamName, teamMembers = [], currentUser, usersMap })
         setNewMessage('');
     };
 
-    const getUser = (uid) => usersMap?.[uid] || { name: 'Unknown User' };
+    const handleDelete = async (msgId) => {
+        if (!teamId || !msgId) return;
+        await deleteDoc(doc(db, 'teams', teamId, 'messages', msgId));
+    };
+
     const formatTime = (ts) =>
         ts?.toDate ? format(ts.toDate(), 'p | MMM d, yyyy') : 'Sending...';
 
     return (
-        <div className="w-full h-full flex flex-col bg-white rounded  border overflow-hidden ">
-            {/* Header */}
-            <div className="flex justify-between items-center px-4 py-2 border-b bg-gradient-to-r from-blue-500 to-green-500 text-white">
-                <h2 className="text-lg font-semibold">{teamName || 'Team Chat'}</h2>
-                <button
-                    onClick={() => setShowMembers((prev) => !prev)}
-                    className="text-xs underline hover:text-gray-200"
-                >
-                    {showMembers ? 'Hide Members' : 'View Members'}
-                </button>
-            </div>
-
-            {/* Member List */}
-            {showMembers && (
-                <div className="px-4 py-2 text-sm bg-gray-50 border-b max-h-40 overflow-y-auto">
-                    <ul className="list-disc list-inside">
-                        {teamMembers.map((uid) => {
-                            const user = getUser(uid);
-                            return <li key={uid}>{user.name}</li>;
-                        })}
-                    </ul>
-                </div>
-            )}
-
+        <div className="w-full h-full p-2 flex flex-col bg-gray-50 overflow-hidden">
             {/* Chat Messages */}
             <div
-                className="flex-1 overflow-y-auto p-4 space-y-3"
+                className="flex-1  overflow-y-auto p-4 space-y-3"
                 style={{
                     backgroundImage: `url("data:image/svg+xml;utf8,<svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'><circle cx='1' cy='1' r='1' fill='%23cbd5e1' /></svg>")`,
                     backgroundRepeat: 'repeat',
                     backgroundColor: '#f9fafb',
                 }}
-
             >
-
-
                 {messages.map((msg) => {
                     const user = getUser(msg.senderId);
                     const isCurrentUser = msg.senderId === currentUser.uid;
                     const initials = user.name?.slice(0, 2).toUpperCase();
+
                     return (
-                        <div key={msg.id} className={`flex gap-2 items-start ${isCurrentUser ? 'justify-end' : ''}`}>
+                        <div
+                            key={msg.id}
+                            className={`flex gap-2 items-start relative group ${isCurrentUser ? 'justify-end' : ''}`}
+                        >
                             {!isCurrentUser && (
                                 <div className="h-8 w-8 flex items-center justify-center rounded-full bg-blue-400 text-white font-bold">
                                     {user.photoURL ? (
@@ -96,14 +71,29 @@ const ChatFeed = ({ teamId, teamName, teamMembers = [], currentUser, usersMap })
                                     )}
                                 </div>
                             )}
-                            <div className={`p-2 rounded-lg max-w-sm break-words ${isCurrentUser ? 'bg-blue-100 text-right' : 'bg-gray-200 text-left'}`}>
-                                {!isCurrentUser && <p className="text-sm font-semibold">{user.name}</p>}
-                                <p>{msg.text}</p>
-                                <p className="text-[8px] text-gray-500 mt-1">{formatTime(msg.timestamp)}</p>
+
+                            <div className="relative">
+                                {/* Delete Icon (hover-only, current user only) */}
+                                {isCurrentUser && (
+                                    <button
+                                        onClick={() => handleDelete(msg.id)}
+                                        className="hidden group-hover:flex items-center justify-center absolute -left-7 top-4 w-6 h-6 hover:text-red-600 bg-gray-100 border rounded-full shadow-sm"
+                                        title="Delete"
+                                    >
+                                        <FaTrash className="w-3 h-3" />
+                                    </button>
+                                )}
+
+                                <div className={`p-2 rounded-lg max-w-sm break-words ${isCurrentUser ? 'bg-blue-100 text-right' : 'bg-gray-200 text-left'}`}>
+                                    {!isCurrentUser && <p className="text-sm font-semibold">{user.name}</p>}
+                                    <p>{msg.text}</p>
+                                    <p className="text-[8px] text-gray-500 mt-1">{formatTime(msg.timestamp)}</p>
+                                </div>
                             </div>
                         </div>
                     );
                 })}
+
                 <div ref={bottomRef} />
             </div>
 
