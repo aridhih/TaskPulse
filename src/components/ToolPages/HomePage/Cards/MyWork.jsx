@@ -59,7 +59,7 @@ const MyWork = () => {
       {/* Task Tabs */}
       <div className="p-2">
         <div className="flex space-x-6 border-b mb-4">
-          {["todo", "progress", "completed"].map((tab) => (
+          {["todo", "In progress", "completed"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTaskTab(tab)}
