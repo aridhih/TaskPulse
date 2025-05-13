@@ -1,22 +1,11 @@
-import React from 'react';
 import { FaChartLine } from 'react-icons/fa';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
+import {  Line } from 'react-chartjs-2';
+import {  Chart as ChartJS,  CategoryScale,  LinearScale,  PointElement,  LineElement,  Title,  Tooltip,  Legend,} from 'chart.js';
+import { useEffect, useState } from 'react';
+import { collection, getCountFromServer } from 'firebase/firestore';
+import { db } from '../../firebase';
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  CategoryScale,  LinearScale,  PointElement,  LineElement,
   Title,
   Tooltip,
   Legend
@@ -35,7 +24,26 @@ const data = {
   ],
 };
 
+//count total users from db user collection
+
+
+
+
 const Dashboard = () => {
+  const [totalUsers , setTotalUsers] = useState('loading...');
+  const countUsers = async () => {
+    try {
+      const usersCollection = collection(db, 'users');
+      const snapshot = await getCountFromServer(usersCollection);
+      setTotalUsers(snapshot.data().count);
+    } catch (error) {
+      console.error('Error counting users:', error);
+    }
+  };
+
+  useEffect(() => {
+    countUsers(); 
+  }, []);
   return (
     <div className="p-4 h-full bg-[#ffffff96]  rounded shadow">
       <h1 className="text-2xl font-bold mb-4 flex items-center">
@@ -44,9 +52,7 @@ const Dashboard = () => {
       <p>Welcome to the admin panel dashboard.</p>
       <div className="mt-4">
         <h2 className="text-xl font-semibold">Statistics</h2>
-        <p>Users: 150</p>
-        <p>Tasks: 300</p>
-        <p>Reports: 50</p>
+        <p>Total Users: {totalUsers}</p>
       </div>
       <div className="mt-4">
         <h2 className="text-xl font-semibold">User Growth</h2>

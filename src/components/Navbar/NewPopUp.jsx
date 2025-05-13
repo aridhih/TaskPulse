@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import CreateTaskForm from "../Task/CreateTaskForm";
 import { useUser } from "../Layout/UserContext";
 import { db } from "../../firebase";
-import { collection, getDocs, query, where,doc, getDoc, documentId } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, documentId } from "firebase/firestore";
 
 
-const TABS = ['Task', 'Doc', 'Chat'];
+const TABS = ['Task'];
 
 
 const NewPopUp = ({ toggleNewPopup, activeTab, setActiveTab }) => {
-const user = useUser();
-const [projects, setProjects] = useState([]);
-const [teamMembers, setTeamMembers] = useState([]);
+  const user = useUser();
+  const [projects, setProjects] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
     const team = user?.teamId;
@@ -34,27 +34,27 @@ const [teamMembers, setTeamMembers] = useState([]);
       try {
         const teamRef = doc(db, "teams", teamId);
         const teamSnap = await getDoc(teamRef);
-    
+
         if (teamSnap.exists()) {
           const { members = [] } = teamSnap.data();
           if (members.length === 0) return setTeamMembers([]);
-    
+
           const chunkSize = 10;
           let allUsers = [];
-    
+
           for (let i = 0; i < members.length; i += chunkSize) {
             const chunk = members.slice(i, i + chunkSize);
             const q = query(collection(db, "users"), where(documentId(), "in", chunk));
             const snapshot = await getDocs(q);
-    
+
             const users = snapshot.docs.map(doc => ({
               id: doc.id,
               ...doc.data()
             }));
-    
+
             allUsers = allUsers.concat(users);
           }
-    
+
           setTeamMembers(allUsers);
         } else {
           console.warn("No such team exists!");
@@ -64,9 +64,9 @@ const [teamMembers, setTeamMembers] = useState([]);
         console.error("Error fetching team members:", error);
       }
     };
-    
 
-    
+
+
     fetchTeamMembers(team);
 
   }, []);
@@ -92,14 +92,20 @@ const [teamMembers, setTeamMembers] = useState([]);
         </div>
 
         {activeTab === 'task' && (
-          <CreateTaskForm toggleNewPopup={toggleNewPopup} projects = {projects} teamId = {user?.teamId} users = {teamMembers}/>
+          projects.length === 0 ? (
+            <div className="text-center h-[80%] flex justify-center items-center text-gray-500">Create your team to assign tasks</div>
+          ) : (
+            <CreateTaskForm
+              toggleNewPopup={toggleNewPopup}
+              projects={projects}
+              teamId={user?.teamId}
+              users={teamMembers}
+            />
+          )
         )}
 
-        {activeTab && activeTab !== 'task' && (
-          <div className="p-4 bg-gray-50 text-black rounded-md shadow-inner mb-4">
-            <p>This is the {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} tab content.</p>
-          </div>
-        )}
+
+
       </div>
     </div>
   );

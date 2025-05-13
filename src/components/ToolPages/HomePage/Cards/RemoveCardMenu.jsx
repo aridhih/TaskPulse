@@ -1,4 +1,3 @@
-import React from 'react'
 import { MdDeleteOutline } from 'react-icons/md'
 
 const RemoveCardMenu = ({ toggleCard, removeCard, cardName }) => {

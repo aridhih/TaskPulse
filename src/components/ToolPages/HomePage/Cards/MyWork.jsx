@@ -3,9 +3,10 @@ import { PiDotsThreeOutlineThin } from "react-icons/pi";
 import { auth, db } from "../../../../firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { MdTaskAlt } from "react-icons/md";
+import RemoveCardMenu from './RemoveCardMenu';
 import { IoFlagOutline } from "react-icons/io5";
 
-const MyWork = () => {
+const MyWork = ({removeCard}) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [activeTaskTab, setActiveTaskTab] = useState("todo");
   const [tasks, setTasks] = useState([]);
@@ -48,12 +49,7 @@ const MyWork = () => {
     <div className="h-72 border py-1 px-4 border-gray-300 rounded-xl bg-gray-200 shadow-lg shadow-gray-300 overflow-auto">
       <div className="h-[15%] border-b border-gray-300 font-medium justify-between flex items-center">
         <p>My Work</p>
-        <PiDotsThreeOutlineThin
-          className={`hover:text-black hover:text-xl ${
-            isCardOpen && "text-black text-xl"
-          } cursor-pointer text-gray-500`}
-          onClick={toggleCard}
-        />
+        <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && "text-black text-xl"} cursor-pointer text-gray-500`} onClick={toggleCard} />
       </div>
 
       {/* Task Tabs */}
@@ -63,11 +59,10 @@ const MyWork = () => {
             <button
               key={tab}
               onClick={() => setActiveTaskTab(tab)}
-              className={`pb-2 px-4 font-medium border-b-2  transition-colors duration-200 ${
-                activeTaskTab === tab
+              className={`pb-2 px-4 font-medium border-b-2  transition-colors duration-200 ${activeTaskTab === tab
                   ? "border-black text-black"
                   : "border-transparent text-gray-600 hover:text-black"
-              }`}
+                }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -77,9 +72,9 @@ const MyWork = () => {
         {/* Task Content */}
         <div className="space-y-1">
           {isLoading ? (
-            <div className="flex justify-center items-center h-32"> 
+            <div className="flex justify-center items-center h-32">
               <p className="text-gray-500">Loading...</p>
-            </div>): null}
+            </div>) : null}
           {filteredTasks.map((task) => (
             <div
               key={task.id}
@@ -95,13 +90,12 @@ const MyWork = () => {
                 </div>
 
                 <span
-                  className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs ${
-                    task.priority === "high"
+                  className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs ${task.priority === "high"
                       ? "bg-red-500"
                       : task.priority === "medium"
-                      ? "bg-yellow-500 text-black"
-                      : "bg-green-500"
-                  }`}
+                        ? "bg-yellow-500 text-black"
+                        : "bg-green-500"
+                    }`}
                 >
                   <IoFlagOutline className="text-sm" />
                   {task.priority.charAt(0).toUpperCase() +
@@ -113,6 +107,13 @@ const MyWork = () => {
           ))}
         </div>
       </div>
+
+      {isCardOpen && (
+        <>
+          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen}  removeCard={removeCard} cardName="My Work" />
+          <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
+        </>
+      )}
     </div>
   );
 };

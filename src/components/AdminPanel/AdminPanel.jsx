@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import UserManagement from './UserManagement';
-import TaskManagement from './TaskManagement';
-import Reports from './Reports';
 import Settings from './Settings';
-import Analytics from './Analytics';
 
 const AdminPanel = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard');
@@ -16,12 +13,7 @@ const AdminPanel = () => {
         return <Dashboard />;
       case 'User Management':
         return <UserManagement />;
-      case 'Task Management':
-        return <TaskManagement />;
-      case 'Reports':
-        return <Reports />;
-      case 'Analytics':
-        return <Analytics />;
+      
       case 'Settings':
         return <Settings />;
       default:

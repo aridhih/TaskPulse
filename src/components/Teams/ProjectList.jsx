@@ -1,5 +1,5 @@
-import { deleteDoc, doc } from "firebase/firestore";
-import React, { useState } from "react";
+import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { useState } from "react";
 import { ImBin } from "react-icons/im";
 import { db } from "../../firebase";
 import toast, { Toaster } from "react-hot-toast";
@@ -8,20 +8,33 @@ import { motion, AnimatePresence } from "framer-motion";
 const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick }) => {
   const [confirmDel, setConfirmDel] = useState(null);
 
-  const handleDeleteProject = async (projectId) => {
-    toast.promise(
-      deleteDoc(doc(db, "projects", projectId)),
-      {
-        loading: "Deleting...",
-        success: "Project deleted successfully! 🚀",
-        error: "Failed to delete project! ❌",
-      }
-    ).then(() => {
-      onProjectDeleted(projectId);
-    });
+ const handleDeleteProject = async (projectId) => {
+  const tasksRef = collection(db, "tasks");
+  const q = query(tasksRef, where("projectId", "==", projectId));
 
-    setConfirmDel(null);
-  };
+  const taskSnapshots = await getDocs(q);
+
+  const deleteTasks = taskSnapshots.docs.map((taskDoc) =>
+    deleteDoc(doc(db, "tasks", taskDoc.id))
+  );
+
+  toast.promise(
+    Promise.all([
+      deleteDoc(doc(db, "projects", projectId)), // delete project
+      ...deleteTasks // delete tasks
+    ]),
+    {
+      loading: "Deleting project and related tasks...",
+      success: "Project & tasks deleted successfully! 🚀",
+      error: "Failed to delete project or tasks! ❌",
+    }
+  ).then(() => {
+    onProjectDeleted(projectId);
+  });
+
+  setConfirmDel(null);
+};
+
 
 
   return (

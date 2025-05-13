@@ -137,9 +137,9 @@ const TasksList = () => {
           <div className="animate-spin rounded-full h-10 w-10 border-t-4 mt-48 border-blue-500"></div>
         </div>
       ) : (
-      <>
-         {/* Render TaskListDetail modal if a task is selected */}
-         {selectedTask && (
+        <>
+          {/* Render TaskListDetail modal if a task is selected */}
+          {selectedTask && (
             <TaskListDetail
               task={selectedTask}
               assignedUser={userDetails[selectedTask.assignedTo]}
@@ -147,109 +147,114 @@ const TasksList = () => {
               onStatusChange={handleStatusChange}  // Close the modal
             />
           )}
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex space-x-4">
-            {['To Do', 'In Progress', 'Completed'].map(status => (
-              <Droppable droppableId={status} key={status}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={`w-1/3 bg-white rounded-lg p-4 shadow-lg h-[380px] border overflow-y-auto transition-colors duration-300 ease-in-out ${snapshot.isDraggingOver ? 'bg-blue-100 border-blue-400 shadow-xl' : ''}`}
-                  >
-                    <h2 className="text-lg font-medium text-gray-800 mb-2">{status}</h2>
-                    {tasksByStatus[status].map((task, index) => (
-                      <Draggable draggableId={task.id} index={index} key={task.id}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => setSelectedTask(task)} 
-                            className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-105 hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
-                            
-                          >
-                            <div className="font-medium text-sm text-gray-900">{task.title}</div>
-                            <div className="text-sm text-gray-500 mb-1">{task.description}</div>
+          {tasks.length === 0 ? (
+            <div className="flex justify-center items-center h-64">
+              <p className="text-gray-500">No tasks found ask your team leader to assigne tasks.</p>
+            </div>) : (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="flex space-x-4">
+                {['To Do', 'In Progress', 'Completed'].map(status => (
+                  <Droppable droppableId={status} key={status}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={`w-1/3 bg-white rounded-lg p-4 shadow-lg h-[380px] border overflow-y-auto transition-colors duration-300 ease-in-out ${snapshot.isDraggingOver ? 'bg-blue-100 border-blue-400 shadow-xl' : ''}`}
+                      >
+                        <h2 className="text-lg font-medium text-gray-800 mb-2">{status}</h2>
+                        {tasksByStatus[status].map((task, index) => (
+                          <Draggable draggableId={task.id} index={index} key={task.id}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                onClick={() => setSelectedTask(task)}
+                                className={`bg-gray-50 p-3 mb-3 rounded-lg shadow-sm border-l-4 border-gray-300 transition-all ease-in-out transform hover:scale-105 hover:shadow-lg ${snapshot.isDragging ? 'bg-blue-200' : ''}`}
 
-                            {/* Deadline display */}
-                            {task.deadline && (
-                              <div className="text-xs text-gray-400 mb-1">
-                                ⏰ Deadline:{" "}
-                                <span className={new Date(task.deadline) < new Date() ? "text-red-500" : "text-green-600"}>
-                                  {new Date(task.deadline).toLocaleDateString()}
-                                </span>
+                              >
+                                <div className="font-medium text-sm text-gray-900">{task.title}</div>
+                                <div className="text-sm text-gray-500 mb-1">{task.description}</div>
+
+                                {/* Deadline display */}
+                                {task.timeTracking && (
+                                  <div className="text-xs text-gray-400 mb-1" >
+                                    Deadline:{" "}
+                                    <span className={new Date(task.timeTracking) < new Date() ? "text-red-500" : "text-green-600"}>
+                                      {new Date(task.timeTracking.endTime).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {/* Priority indicator */}
+                                <div className="text-xs mb-1">
+                                  Priority:{" "}
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-white ${priorityColors[task.priority] || 'bg-gray-500'}`}
+                                  >
+                                    {task.priority}
+                                  </span>
+                                </div>
+
+                                {/* Assigned user */}
+                                {task.assignedTo && (
+                                  <div className="flex items-center gap-2 mt-1 text-xs text-gray-600">
+                                    Assigned to:
+                                    {loadingUserIds.includes(task.assignedTo) ? (
+                                      <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent animate-spin rounded-full"></div>
+                                    ) : userDetails[task.assignedTo] ? (
+                                      userDetails[task.assignedTo].photoURL ? (
+                                        <img
+                                          src={userDetails[task.assignedTo].photoURL}
+                                          alt="User"
+                                          className="w-5 h-5 rounded-full object-cover"
+                                          title={userDetails[task.assignedTo].name.toUpperCase()}
+                                        />
+                                      ) : (
+                                        <div
+                                          className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                          title={userDetails[task.assignedTo].name.toUpperCase()}
+                                        >
+                                          {userDetails[task.assignedTo].name
+                                            .split(' ')
+                                            .map(n => n[0])
+                                            .join('')
+                                            .toUpperCase()}
+                                        </div>
+                                      )
+                                    ) : null}
+                                  </div>
+                                )}
+
+                                {/* Manual status change */}
+                                <div className="mt-2" >
+
+                                  <label htmlFor={`status-select-${task.id}`} className="text-xs text-gray-500" onClick={(e) => e.stopPropagation()}>Change Status</label>
+                                  <select
+                                    id={`status-select-${task.id}`}
+                                    value={task.status}
+                                    onClick={(e) => e.stopPropagation()}
+                                    // onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                                    onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                                    className="mt-1 p-1 border rounded-md w-full text-sm"
+                                  >
+                                    <option value="To Do">To Do</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                  </select>
+                                </div>
                               </div>
                             )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ))}
+              </div>
+            </DragDropContext>)}
 
-                            {/* Priority indicator */}
-                            <div className="text-xs mb-1">
-                              Priority:{" "}
-                              <span
-                                className={`px-2 py-0.5 rounded text-white ${priorityColors[task.priority] || 'bg-gray-500'}`}
-                              >
-                                {task.priority}
-                              </span>
-                            </div>
-
-                            {/* Assigned user */}
-                            {task.assignedTo && (
-                              <div className="flex items-center gap-2 mt-1 text-xs text-gray-600">
-                                Assigned to:
-                                {loadingUserIds.includes(task.assignedTo) ? (
-                                  <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent animate-spin rounded-full"></div>
-                                ) : userDetails[task.assignedTo] ? (
-                                  userDetails[task.assignedTo].photoURL ? (
-                                    <img
-                                      src={userDetails[task.assignedTo].photoURL}
-                                      alt="User"
-                                      className="w-5 h-5 rounded-full object-cover"
-                                      title={userDetails[task.assignedTo].name.toUpperCase()}
-                                    />
-                                  ) : (
-                                    <div
-                                      className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                      title={userDetails[task.assignedTo].name.toUpperCase()}
-                                    >
-                                      {userDetails[task.assignedTo].name
-                                        .split(' ')
-                                        .map(n => n[0])
-                                        .join('')
-                                        .toUpperCase()}
-                                    </div>
-                                  )
-                                ) : null}
-                              </div>
-                            )}
-
-                            {/* Manual status change */}
-                            <div className="mt-2" >
-  
-                              <label htmlFor={`status-select-${task.id}`} className="text-xs text-gray-500"  onClick={(e) => e.stopPropagation()}>Change Status</label>
-                              <select
-                                id={`status-select-${task.id}`}
-                                value={task.status}
-                                onClick={(e) => e.stopPropagation()}
-                                // onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                                onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                                className="mt-1 p-1 border rounded-md w-full text-sm"
-                              >
-                                <option value="To Do">To Do</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                              </select>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            ))}
-          </div>
-        </DragDropContext>
         </>
       )}
     </div>

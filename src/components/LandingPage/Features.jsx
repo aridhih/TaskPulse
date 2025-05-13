@@ -48,34 +48,55 @@ const FeatureSection = ({ title, description, features, image, reverse = false }
 const Features = () => {
   return (
     <section className="bg-white" id="features">
-      <div className="max-w-screen-xl px-4 py-8 mx-auto space-y-12 lg:py-24 lg:px-6">
-        <FeatureSection
-          title="Seamless Task Management"
-          description="Organize your tasks efficiently with real-time collaboration, priorities, and deadlines."
-          features={["Drag & Drop Task Boards", "Smart Reminders & Notifications", "Kanban & List Views"]}
-          image="https://images.unsplash.com/photo-1591696205602-2f950c417cb9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        />
-        <FeatureSection
-          title="AI-Powered Productivity"
-          description="Leverage AI-driven insights to optimize your workflow and boost team efficiency."
-          features={["Automated Task Assignments", "AI-Generated Task Suggestions", "Smart Progress Tracking"]}
-          image="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-          reverse
-        />
-        <FeatureSection
-          title="Powerful Team Collaboration"
-          description="Enhance communication and teamwork with built-in chat, file sharing, and integrations."
-          features={["Real-Time Chat & Comments", "File Attachments & Cloud Sync", "Integrated with Slack & Zoom"]}
-          image="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        />
-        <FeatureSection
-          title="Custom Workflows & Automations"
-          description="Automate repetitive tasks and streamline your workflow with custom rules."
-          features={["No-Code Workflow Builder", "Trigger-Based Automations", "Integration with Webhooks"]}
-          image="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-          reverse
-        />
-      </div>
+     <div className="max-w-screen-xl px-4 py-8 mx-auto space-y-12 lg:py-24 lg:px-6">
+  <FeatureSection
+    title="Effortless Team & Project Management"
+    description="Create and manage multiple teams and projects with clear roles and streamlined workflows."
+    features={[
+      "Multi-Team Support",
+      "Project-Based Task Grouping",
+      "Team Creator Role & Permissions"
+    ]}
+    image="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+  />
+
+  <FeatureSection
+    title="Smart Task Management"
+    description="Organize, prioritize, and track your tasks with an intuitive interface and real-time updates."
+    features={[
+      "Task Status & Deadlines",
+      "Assignment & Progress Tracking",
+      "Kanban-style Views"
+    ]}
+    image="https://images.unsplash.com/photo-1591696205602-2f950c417cb9"
+    reverse
+  />
+
+  <FeatureSection
+    title="Docs & Clips Central"
+    description="Easily manage documents, code snippets, and multimedia clips in one organized space."
+    features={[
+      "Attach Files to Projects",
+      "Support for .txt, .zip, Code Files, and More",
+      "Future Sharing in Chat"
+    ]}
+    image="https://images.unsplash.com/photo-1552664730-d307ca884978"
+  />
+
+  <FeatureSection
+    title="Timesheets & Personal Notes"
+    description="Track your work hours and jot down personal notes to stay productive and organized."
+    features={[
+      "Start/Stop Task Timers",
+      "Weekly Timesheet View",
+      "Secure Personal Notes Section"
+    ]}
+    image="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+    reverse
+  />
+</div>
+
+
     </section>
   );
 };

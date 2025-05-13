@@ -5,20 +5,23 @@ import { AiOutlineClose } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import { FaTrashAlt } from "react-icons/fa";
-import { db } from "../../../firebase";
-import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "firebase/firestore";
-import { AiOutlineShareAlt } from "react-icons/ai";
+import { auth, db } from "../../../firebase";
+import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, where, getDocs, getDoc, doc } from "firebase/firestore";
+import CreateDocModel from "./CreateDocModel";
 
 
 const DocsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [docName, setDocName] = useState("");
   const [docDescription, setDocDescription] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedDocIndex, setSelectedDocIndex] = useState(null);
   const [docFile, setDocFile] = useState(null);
+  const [projectId, setProjectId] = useState("");
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -56,8 +59,8 @@ const DocsPage = () => {
         fileUrl: cloudinaryData.secure_url,
         fileType: docFile.type,
         createdAt: serverTimestamp(),
-        createdBy: "userId", // replace with actual user ID
-        projectId: "projectId", // replace with selected project
+        createdBy: auth.currentUser.uid,
+        projectId: projectId,
       };
 
       await addDoc(collection(db, "docs"), newDoc);
@@ -100,15 +103,10 @@ const DocsPage = () => {
     handlePopupClose();
   };
 
-  const handleShare = () => {
-    alert(`Sharing ${docs[selectedDocIndex].name}`);
-    handlePopupClose();
-  };
-
 
 
   useEffect(() => {
-    const q = query(collection(db, "docs"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "docs"), orderBy("createdAt", "desc"), where("createdBy", "==", auth.currentUser.uid));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedDocs = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -119,6 +117,52 @@ const DocsPage = () => {
       setLoading(false);
     });
 
+    const fetchData = async () => {
+      try {
+        const teamsQuery = query(collection(db, "teams"), where("members", "array-contains", auth.currentUser.uid));
+        const teamSnapshot = await getDocs(teamsQuery);
+        const teamList = teamSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTeams(teamList);
+
+
+
+        const teamIds = teamList.map((team) => team.id);
+        if (teamIds.length === 0) {
+          setProjects([]);
+          setLoading(false);
+          return;
+        }
+
+        const projectsQuery = query(
+          collection(db, "projects"),
+          where("teamId", "in", teamIds)
+        );
+        const projectSnapshot = await getDocs(projectsQuery);
+
+        const fetchedProjects = [];
+        for (const docSnap of projectSnapshot.docs) {
+          const project = { id: docSnap.id, ...docSnap.data() };
+          if (project.teamId) {
+            const teamDoc = await getDoc(doc(db, "teams", project.teamId));
+            project.teamName = teamDoc.exists()
+              ? teamDoc.data().teamName
+              : "Unknown Team";
+          }
+          fetchedProjects.push(project);
+        }
+
+        setProjects(fetchedProjects);
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -144,16 +188,11 @@ const DocsPage = () => {
       <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-4 bg-white overflow-y-scroll hide-scrollbar">
         <div className="grid grid-cols-2 gap-3 my-3">
           {loading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <p className="text-sm text-gray-500">Loading documents...</p>
+            <div className="flex justify-center w-full items-center h-20">
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-4 mt-48 ml-48 border-blue-500"></div>
             </div>
           ) : docs.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center col-span-2 mt-20">
-              <img
-                src="https://res.cloudinary.com/demo/image/upload/dndvfynfo/empty_docs.svg"
-                alt="No documents"
-                className="w-60 h-60 opacity-70"
-              />
               <h3 className="text-xl font-semibold mt-4 text-gray-700">No documents yet</h3>
               <p className="text-sm text-gray-500 mb-4">
                 Start by creating your first document to share, store, or collaborate.
@@ -191,6 +230,9 @@ const DocsPage = () => {
                   <p className="text-xs text-gray-400">
                     {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : "—"}
                   </p>
+                  <p className="text-xs text-gray-400">
+                    Linked with: <span className="font-semibold">{doc.projectId}</span> 
+                  </p>
                   <a
                     href={doc.fileUrl}
                     target="_blank"
@@ -209,64 +251,12 @@ const DocsPage = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={handleCloseModal}
-        >
-          <div
-            className="bg-white p-8 rounded-lg w-96 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-2 right-2 text-gray-600"
-              onClick={handleCloseModal}
-            >
-              <AiOutlineClose />
-            </button>
-            <h2 className="text-lg font-semibold mb-4">Create Document</h2>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <div>
-                <label className="text-sm">Select File <span className="text-red-500">*</span></label>
-                <input
-                  type="file"
-                  className="w-full border p-2 rounded"
-                  accept=".txt,.zip,.pdf,.docx,.js,.py,.html,.css,.json"
-                  onChange={(e) => setDocFile(e.target.files[0])}
-                  required
-                />
-              </div>
+        <CreateDocModel handleCloseModal={handleCloseModal} projects={projects}
+          handleSubmit={handleSubmit} projectId={projectId} setProjectId={setProjectId}
+          docName={docName} setDocName={setDocName}
+          setDocFile={setDocFile} setDocDescription={setDocDescription}
+        />
 
-              <div>
-                <label className="text-sm">Document Name <span className="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  className="w-full border p-2 rounded"
-                  placeholder="Enter document name"
-                  value={docName}
-                  onChange={(e) => setDocName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="text-sm">Description</label>
-                <textarea
-                  className="w-full border p-2 rounded"
-                  placeholder="Short description"
-                  value={docDescription}
-                  onChange={(e) => setDocDescription(e.target.value)}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-4"
-              >
-                Upload Document
-              </button>
-            </form>
-          </div>
-        </div>
       )}
 
       {/* Popup Menu */}
@@ -299,13 +289,6 @@ const DocsPage = () => {
             >
               <FaTrashAlt className="text-red-500" />
               <span>Delete</span>
-            </button>
-            <button
-              className="flex items-center gap-2 w-full p-2 border border-gray-300 rounded hover:bg-gray-100"
-              onClick={handleShare}
-            >
-              <AiOutlineShareAlt className="text-green-500" />
-              <span>Share</span>
             </button>
           </div>
         </div>

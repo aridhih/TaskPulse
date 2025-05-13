@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaUsers, FaUserCircle, FaEnvelope, FaPhone, FaTrash, FaEdit } from 'react-icons/fa';
 import { db } from '../../firebase';  
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -23,30 +23,14 @@ const UserManagement = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [users]);
 
   // Function to delete a user via Cloud Function
   const handleDeleteUser = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        const response = await fetch(`https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/deleteUser?uid=${userId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          setUsers(users.filter(user => user.id !== userId)); // Update UI after deletion
-        } else {
-          console.error("Error deleting user from Cloud Function:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error calling delete function:", error);
-      }
+      deleteDoc(doc(db, 'users', userId));
     }
+
 };
 
 
@@ -85,7 +69,7 @@ const UserManagement = () => {
                   </button>
                   <button
                     className="text-red-600 hover:text-red-800"
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => handleDeleteUser(user.uid)}
                   >
                     <FaTrash />
                   </button>

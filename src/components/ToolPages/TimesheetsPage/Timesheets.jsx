@@ -1,168 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { FiPlay, FiPause } from 'react-icons/fi';
-import moment from 'moment';
-
-const getWeekDates = (start) => {
-  const startOfWeek = moment(start).startOf('week');
-  return [...Array(7)].map((_, i) => startOfWeek.clone().add(i, 'days'));
-};
+import { useEffect, useState } from "react";
+import { RiTimerLine, RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+import toast from "react-hot-toast";
+import { fetchTasks, fetchTimesheets, fetchWeeklyTimeEntries } from "./firestoreQueries";
+import { getCurrentWeek, getNextWeek, getPrevWeek } from "./dateUtils";
+import TimesheetTable from "./TimesheetTable";
+import WeeklyEntries from "./WeeklyEntries";
+import useTimer from "./useTimer";
+import { auth } from "../../../firebase";
 
 const Timesheets = () => {
-  const [weekStart, setWeekStart] = useState(moment());
   const [tasks, setTasks] = useState([]);
-  const [stopwatch, setStopwatch] = useState(0);
-  const [stopwatchRunning, setStopwatchRunning] = useState(false);
-  const [timerInterval, setTimerInterval] = useState(null);
+  const [timesheetData, setTimesheetData] = useState({});
+  const [groupedEntries, setGroupedEntries] = useState({});
+  const [teamCache, setTeamCache] = useState({});
+  const [projectCache, setProjectCache] = useState({});
+  const [notes, setNotes] = useState({});
+  const [weekStart, setWeekStart] = useState(getCurrentWeek().start);
 
-  const weekDates = getWeekDates(weekStart);
+  const { days: week, start } = getCurrentWeek(weekStart);
+  const { activeTimers, handleStart, handlePause, handleResume, handleStop } = useTimer(
+    setTimesheetData,
+    notes,
+    setNotes
+  );
 
   useEffect(() => {
-    if (stopwatchRunning) {
-      const interval = setInterval(() => {
-        setStopwatch((prev) => prev + 1);
-      }, 1000);
-      setTimerInterval(interval);
-      return () => clearInterval(interval);
-    } else {
-      clearInterval(timerInterval);
-    }
-  }, [stopwatchRunning]);
+    const fetchData = async () => {
+      try {
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        end.setHours(23, 59, 59, 999);
+        const [taskData, timesheetData, timeEntries] = await Promise.all([
+          fetchTasks(auth.currentUser.uid, teamCache, projectCache),
+          fetchTimesheets(auth.currentUser.uid, start, end),
+          fetchWeeklyTimeEntries(auth.currentUser.uid, start, end),
+        ]);
+        setTasks(taskData.tasks);
+        setTeamCache(taskData.teamCache);
+        setProjectCache(taskData.projectCache);
+        setTimesheetData(timesheetData);
+        setGroupedEntries(timeEntries.grouped);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        toast.error(error.code === "permission-denied" ? "Access denied" : "Failed to load data");
+      } 
+    };
+    fetchData();
+  }, [start]);
 
-  const formatTime = (secs) => {
-    const h = Math.floor(secs / 3600).toString().padStart(2, '0');
-    const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
-    const s = (secs % 60).toString().padStart(2, '0');
-    return `${h}:${m}:${s}`;
-  };
+  const handlePrevWeek = () => setWeekStart(getPrevWeek(weekStart));
+  const handleNextWeek = () => setWeekStart(getNextWeek(weekStart));
 
-  const addTask = () => {
-    setTasks([...tasks, { name: 'Task', entries: [] }]);
-  };
-
-  const addEntry = (taskIndex) => {
-    const newTasks = [...tasks];
-    newTasks[taskIndex].entries.push({ name: '', day: '', time: 0, running: false, startTime: 0 });
-    setTasks(newTasks);
-  };
-
-  const toggleEntryTimer = (taskIndex, entryIndex) => {
-    const newTasks = [...tasks];
-    const entry = newTasks[taskIndex].entries[entryIndex];
-    if (!entry.day) {
-      const selectedDay = prompt('Enter day (Sun, Mon, Tue, Wed, Thur, Fri, Sat)');
-      if (!selectedDay || !['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'].includes(selectedDay)) return;
-      entry.day = selectedDay;
-    }
-    if (entry.running) {
-      const elapsed = Math.floor((Date.now() - entry.startTime) / 1000);
-      entry.time += elapsed;
-      entry.running = false;
-      setStopwatchRunning(false);
-    } else {
-      entry.startTime = Date.now();
-      entry.running = true;
-      setStopwatch(0);
-      setStopwatchRunning(true);
-    }
-    setTasks(newTasks);
-  };
-
-  const calculateTotal = (entries) => {
-    return entries.reduce((acc, curr) => acc + curr.time, 0);
-  };
-
-  const getDayTime = (entries, day) => {
-    return entries
-      .filter((e) => e.day === day)
-      .reduce((acc, curr) => acc + curr.time, 0);
-  };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-2 items-center">
-          <button onClick={() => setWeekStart(weekStart.clone().subtract(7, 'days'))}>
-            <BiChevronLeft size={24} />
-          </button>
-          <span className="font-bold">
-            {weekDates[0].format('MMM D')} - {weekDates[6].format('MMM D')}
-          </span>
-          <button onClick={() => setWeekStart(weekStart.clone().add(7, 'days'))}>
-            <BiChevronRight size={24} />
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2 text-xl">
-          <FiPlay />
-          <span>{formatTime(stopwatch)}</span>
+    <div className="h-[calc(100vh-50px)] w-full border rounded-b-lg">
+      <div className="h-[54px] bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 flex justify-between items-center text-white">
+       
+        <div className="flex gap-1 ml-1 justify-center items-center">
+          <RiTimerLine size={16} />
+          <p className="text-[13px] cursor-default font-[cursive]">Timesheets</p>
         </div>
       </div>
-
-      <table className="table-auto w-full border text-center">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border p-2">Task</th>
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'].map((d) => (
-              <th key={d} className="border p-2">{d}</th>
-            ))}
-            <th className="border p-2">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, taskIndex) => (
-            <>
-              <tr key={taskIndex}>
-                <td className="border p-2" rowSpan={task.entries.length + 2}>
-                  {task.name}<br />
-                  <button
-                    className="text-blue-500 underline mt-2"
-                    onClick={() => addEntry(taskIndex)}
-                  >
-                    + Add Entry
-                  </button>
-                </td>
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'].map((day) => (
-                  <td key={day} className="border p-2">
-                    {getDayTime(task.entries, day) > 0 ? `${Math.floor(getDayTime(task.entries, day) / 3600)}h` : ''}
-                  </td>
-                ))}
-                <td className="border p-2">{Math.floor(calculateTotal(task.entries) / 3600)}h</td>
-              </tr>
-              {task.entries.map((entry, entryIndex) => (
-                <tr key={entryIndex}>
-                  <td colSpan={8} className="border p-2 flex items-center gap-2">
-                    <input
-                      className="border px-2 py-1 mr-2"
-                      value={entry.name}
-                      onChange={(e) => {
-                        const updated = [...tasks];
-                        updated[taskIndex].entries[entryIndex].name = e.target.value;
-                        setTasks(updated);
-                      }}
-                      placeholder="Entry Name"
-                    />
-                    <button
-                      className="border px-2 py-1"
-                      onClick={() => toggleEntryTimer(taskIndex, entryIndex)}
-                    >
-                      {entry.running ? <FiPause /> : <FiPlay />}
-                    </button>
-                    <span className="text-sm">{entry.day}</span>
-                  </td>
-                </tr>
-              ))}
-            </>
-          ))}
-        </tbody>
-      </table>
-
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={addTask}
-      >
-        Add Task
-      </button>
+       <div className="flex items-center gap-1 my-5 ml-4">
+          <RiArrowLeftLine
+            className="cursor-pointer"
+            onClick={handlePrevWeek}
+            size={20}
+          />
+          <p className="text-[13px] font-[cursive]">
+            {`${week[0].label} - ${week[6].label}`}
+          </p>
+          <RiArrowRightLine
+            className="cursor-pointer"
+            onClick={handleNextWeek}
+            size={20}
+          />
+        </div>
+      <TimesheetTable
+        tasks={tasks}
+        timesheetData={timesheetData}
+        week={week}
+        activeTimers={activeTimers}
+        handleStart={handleStart}
+        handlePause={handlePause}
+        handleResume={handleResume}
+        handleStop={handleStop}
+        notes={notes}
+      />
+      <WeeklyEntries groupedEntries={groupedEntries} tasks={tasks} weekDays={week.map((d) => d.iso)} />
     </div>
   );
 };

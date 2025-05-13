@@ -1,7 +1,14 @@
-import React from 'react';
 import { FaUserAlt, FaTasks, FaSearch } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const SearchModel = ({ showResults, searchTerm, hasResults, filteredUsers, filteredTasks }) => {
+  const navigate = useNavigate(); 
+
+  const openchat = (e) => {
+          navigator.clipboard.writeText(e.target.innerText)
+          alert("Email copied to clipboard");
+          navigate(`/inbox`)
+  };
   const noResults = filteredUsers.length === 0 && filteredTasks.length === 0;
 
   if (!showResults || !searchTerm || (!hasResults && !noResults)) return null;
@@ -25,9 +32,13 @@ const SearchModel = ({ showResults, searchTerm, hasResults, filteredUsers, filte
                 Users
               </h2>
               {filteredUsers.map(user => (
-                <div key={user.id} className="p-3 mb-2 bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg shadow-sm transition-colors duration-200">
+                <div
+                  key={user.id}
+                  onClick={openchat}
+                  className="p-3 mb-2 bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg shadow-sm transition-colors duration-200"
+                >
                   <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
+                  <p className="text-xs text-gray-500"  >{user.email}</p>
                 </div>
               ))}
             </div>
@@ -40,7 +51,10 @@ const SearchModel = ({ showResults, searchTerm, hasResults, filteredUsers, filte
                 Tasks
               </h2>
               {filteredTasks.map(task => (
-                <div key={task.id} className="p-3 mb-2 bg-gray-50 hover:bg-blue-50 rounded-lg shadow-sm transition-colors duration-200">
+                <div
+                  key={task.id}
+                  className="p-3 mb-2 bg-gray-50 hover:bg-blue-50 rounded-lg shadow-sm transition-colors duration-200"
+                >
                   <p className="font-medium text-sm">{task.title}</p>
                   <p className="text-xs text-gray-500">{task.description}</p>
                 </div>

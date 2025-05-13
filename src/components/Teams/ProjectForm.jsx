@@ -4,7 +4,7 @@ import { RxCross2 } from 'react-icons/rx';
 const ProjectForm = ({ projectName, setProjectName,creating, handleCreateProject, setShowProjectForm, error }) => (
     <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-md border">
         
-       <div className="flex justify-between items-center mb-3 border"> 
+       <div className="flex justify-between items-center mb-3 "> 
        <h2 className="text-xl font-bold text-gray-700">Create Project</h2>
         <RxCross2 onClick={() => setShowProjectForm(false)} className="h-5 w-5 cursor-pointer mb-2  hover:rotate-90 transition duration-300" />
         </div>

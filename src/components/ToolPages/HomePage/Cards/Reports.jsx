@@ -16,14 +16,8 @@ const Reports = ({removeCard}) => {
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && 'text-black text-xl'} cursor-pointer text-gray-500`} onClick={toggleCard} />
       </div>
 
-      <div className=' h-[85%] px-6 py-2'>
-        <ol className='list-disc' > <li>
-          Report 1
-        </li>
-          <li>
-          Report 2
-          </li>
-        </ol>
+      <div className='items-center justify-center flex h-[85%] px-6 py-2'>
+        <p>No Reports Available</p>
 
       </div>
 
