@@ -46,7 +46,8 @@ const MyWork = ({removeCard}) => {
   );
 
   return (
-    <div className="h-72 border py-1 px-4 border-gray-300 rounded-xl bg-gray-200 shadow-lg shadow-gray-300 overflow-auto">
+    <div className="h-72 border py-1 px-4 border-gray-300 rounded-xl bg-gray-200 shadow-lg shadow-gray-300">
+
       <div className="h-[15%] border-b border-gray-300 font-medium justify-between flex items-center">
         <p>My Work</p>
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && "text-black text-xl"} cursor-pointer text-gray-500`} onClick={toggleCard} />
@@ -110,7 +111,7 @@ const MyWork = ({removeCard}) => {
 
       {isCardOpen && (
         <>
-          <RemoveCardMenu toggleCard={toggleCard} isCardOpen={isCardOpen}  removeCard={removeCard} cardName="My Work" />
+          <RemoveCardMenu toggleCard={toggleCard}  removeCard={removeCard} cardName="My Work" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}

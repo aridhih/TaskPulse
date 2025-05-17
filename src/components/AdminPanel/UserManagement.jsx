@@ -47,7 +47,7 @@ const UserManagement = ({ users, loading }) => {
       ) : (
         <div className="mt-4">
           <h2 className="text-xl font-semibold mb-2">User List</h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-lg bg-gray-900 ">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-lg bg-gray-900 w">
             {users
               ?.filter(user => user.role !== 'admin')
               .map(user => (

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { PiDotsThreeOutlineThin } from "react-icons/pi";
-import RemoveCardMenu from "./RemoveCardMenu";
+import { FaUsers } from "react-icons/fa";
+import { GoFilter } from "react-icons/go";
 import { auth, db } from "../../../../firebase";
 import {
   collection,
@@ -10,97 +11,93 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { FaUsers } from "react-icons/fa";
-import { GoFilter } from "react-icons/go";
+import RemoveCardMenu from "./RemoveCardMenu";
 
 const AssignedCard = ({ removeCard }) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [assignedTasks, setAssignedTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filterPopupOpen, setFilterPopupOpen] = useState(false);
-  const [selectedTeamFilter, setSelectedTeamFilter] = useState(null);
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
-  const toggleCard = () => setIsCardOpen(!isCardOpen);
+  const uid = auth.currentUser?.uid;
 
+  const toggleCard = () => setIsCardOpen(prev => !prev);
+
+  // Load selected team from localStorage
   useEffect(() => {
-    const uid = auth.currentUser?.uid;
-    if (!uid) return;
-
-    // Load previously selected team from localStorage
     const savedTeamId = localStorage.getItem("selectedTeam");
-    if (savedTeamId) {
-      setSelectedTeamFilter({ id: savedTeamId });
-    }
-
-    const fetchAssignedTasks = async () => {
-      try {
-        const tasksQuery = query(
-          collection(db, "tasks"),
-          where("assignedTo", "==", uid)
-        );
-        const snapshot = await getDocs(tasksQuery);
-        const tasks = [];
-
-        for (const docSnap of snapshot.docs) {
-          const task = { id: docSnap.id, ...docSnap.data() };
-          if (task.teamId) {
-            const teamDoc = await getDoc(doc(db, "teams", task.teamId));
-            task.teamName = teamDoc.exists()
-              ? teamDoc.data().teamName
-              : "Unknown Team";
-          }
-          tasks.push(task);
-        }
-
-        setAssignedTasks(tasks);
-      } catch (err) {
-        console.error("Failed to fetch tasks:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchTeams = async () => {
-      try {
-        const teamQuery = query(
-          collection(db, "teams"),
-          where("members", "array-contains", uid)
-        );
-        const snapshot = await getDocs(teamQuery);
-        const fetchedTeams = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setTeams(fetchedTeams);
-
-        // After fetching teams, update selected team object from id
-        if (savedTeamId) {
-          const matched = fetchedTeams.find((t) => t.id === savedTeamId);
-          if (matched) setSelectedTeamFilter(matched);
-        }
-      } catch (err) {
-        console.error("Failed to fetch teams:", err);
-      }
-    };
-
-    fetchAssignedTasks();
-    fetchTeams();
+    if (savedTeamId) setSelectedTeam({ id: savedTeamId });
   }, []);
 
-  const handleTeamFilterClick = (team) => {
-    setSelectedTeamFilter(team);
+  // Fetch tasks assigned to current user
+  const fetchAssignedTasks = useCallback(async () => {
+    if (!uid) return;
+    setLoading(true);
+    try {
+      const tasksQuery = query(collection(db, "tasks"), where("assignedTo", "==", uid));
+      const snapshot = await getDocs(tasksQuery);
+
+      const taskPromises = snapshot.docs.map(async (docSnap) => {
+        const task = { id: docSnap.id, ...docSnap.data() };
+        if (task.teamId) {
+          const teamDoc = await getDoc(doc(db, "teams", task.teamId));
+          task.teamName = teamDoc.exists() ? teamDoc.data().teamName : "Unknown Team";
+        }
+        return task;
+      });
+
+      const tasks = await Promise.all(taskPromises);
+      setAssignedTasks(tasks);
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [uid]);
+
+  // Fetch teams user is part of
+  const fetchTeams = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const teamQuery = query(collection(db, "teams"), where("members", "array-contains", uid));
+      const snapshot = await getDocs(teamQuery);
+      const fetchedTeams = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTeams(fetchedTeams);
+
+      const savedTeamId = localStorage.getItem("selectedTeam");
+      if (savedTeamId) {
+        const matched = fetchedTeams.find((t) => t.id === savedTeamId);
+        if (matched) setSelectedTeam(matched);
+      }
+    } catch (err) {
+      console.error("Error fetching teams:", err);
+    }
+  }, [uid]);
+
+  useEffect(() => {
+    fetchAssignedTasks();
+    fetchTeams();
+  }, [fetchAssignedTasks, fetchTeams]);
+
+  // Handle filter selection
+  const handleTeamFilter = (team) => {
+    setSelectedTeam(team);
     localStorage.setItem("selectedTeam", team.id);
     setFilterPopupOpen(false);
   };
 
-  const clearTeamFilter = () => {
-    setSelectedTeamFilter(null);
+  const clearFilter = () => {
+    setSelectedTeam(null);
     localStorage.removeItem("selectedTeam");
   };
 
-  const filteredTasks = selectedTeamFilter
-    ? assignedTasks.filter((task) => task.teamId === selectedTeamFilter.id)
+  const filteredTasks = selectedTeam
+    ? assignedTasks.filter((task) => task.teamId === selectedTeam.id)
     : assignedTasks;
 
   return (
@@ -109,11 +106,11 @@ const AssignedCard = ({ removeCard }) => {
       <div className="flex justify-between items-center border-b border-gray-300 h-[15%]">
         <p className="font-medium">Assigned To Me</p>
         <div className="flex items-center gap-2">
-          {/* 🔄 Filter icon (moved before dots icon) */}
+          {/* Filter */}
           <div className="relative">
             <button
-              onClick={() => setFilterPopupOpen(!filterPopupOpen)}
-              className="text-gray-500 hover:text-black text-md mt-3 cursor-pointer"
+              onClick={() => setFilterPopupOpen(prev => !prev)}
+              className="text-gray-500 hover:text-black mt-3"
             >
               <GoFilter />
             </button>
@@ -124,18 +121,16 @@ const AssignedCard = ({ removeCard }) => {
                   <div
                     key={team.id}
                     className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleTeamFilterClick(team)}
+                    onClick={() => handleTeamFilter(team)}
                   >
                     <FaUsers className="text-gray-600 text-sm" />
-                    <span className="text-sm text-gray-800">
-                      {team.teamName}
-                    </span>
+                    <span className="text-sm text-gray-800">{team.teamName}</span>
                   </div>
                 ))}
-                {selectedTeamFilter && (
+                {selectedTeam && (
                   <div className="p-2 text-center border-t">
                     <button
-                      onClick={clearTeamFilter}
+                      onClick={clearFilter}
                       className="text-xs text-red-500 hover:underline"
                     >
                       Clear Filter
@@ -146,11 +141,9 @@ const AssignedCard = ({ removeCard }) => {
             )}
           </div>
 
-          {/* 3-dot menu */}
+          {/* 3-dot Menu */}
           <PiDotsThreeOutlineThin
-            className={`hover:text-black ${
-              isCardOpen ? "text-black" : "text-gray-500"
-            } text-xl cursor-pointer`}
+            className={`hover:text-black ${isCardOpen ? "text-black" : "text-gray-500"} text-xl cursor-pointer`}
             onClick={toggleCard}
           />
         </div>
@@ -164,8 +157,7 @@ const AssignedCard = ({ removeCard }) => {
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="flex justify-center items-center h-full text-gray-500">
-            No tasks{" "}
-            {selectedTeamFilter ? `for "${selectedTeamFilter.teamName}"` : ""}
+            No tasks {selectedTeam ? `for "${selectedTeam.teamName}"` : ""}
           </div>
         ) : (
           filteredTasks.map((task) => (
@@ -188,11 +180,7 @@ const AssignedCard = ({ removeCard }) => {
       {/* Remove Card */}
       {isCardOpen && (
         <>
-          <RemoveCardMenu
-            toggleCard={toggleCard}
-            removeCard={removeCard}
-            cardName="Assigned To Me"
-          />
+          <RemoveCardMenu toggleCard={toggleCard} removeCard={removeCard} cardName="Assigned To Me" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}
