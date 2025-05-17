@@ -3,9 +3,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoMention } from "react-icons/go";
 import { RiFingerprintFill } from "react-icons/ri";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { doc, getDoc } from "firebase/firestore";
 
 
 const fadeIn = {
@@ -41,6 +42,20 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const checkRole = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === "admin") {
+          navigate("/user:admin/adminpanel");
+        } else {
+          navigate("/home");
+        }
+      }
+    }
+  };
   // Handle Login
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,18 +63,18 @@ function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      navigate("/home"); 
+     checkRole();
     } catch (error) {
       console.error("Login error:", error);
       if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
         setFireBaseError("Invalid email or password.");
       } else if (error.code === "auth/network-request-failed") {
-        setFireBaseError("Network error. Please check your internet connection.");   
+        setFireBaseError("Network error. Please check your internet connection.");
       } else {
         setFireBaseError("Something went wrong. Please try again.");
       }
     }
-  };  
+  };
 
   return (
     <motion.div className="grid grid-cols-1 lg:grid-cols-2 h-screen" initial="hidden" animate="visible" variants={fadeIn}>
@@ -85,14 +100,12 @@ function Login() {
                   <GoMention className="w-5 h-5" />
                 </div>
                 <input
-                  type="email"
                   name="email"
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full py-3 pl-10 text-black placeholder-gray-500 border ${
-                    errors.email ? "border-red-500" : "border-gray-200"
-                  } rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600`}
+                  className={`block w-full py-3 pl-10 text-black placeholder-gray-500 border ${errors.email ? "border-red-500" : "border-gray-200"
+                    } rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600`}
                 />
               </div>
             </div>
@@ -111,9 +124,8 @@ function Login() {
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full py-3 pl-10 text-black placeholder-gray-500 border ${
-                    errors.password ? "border-red-500" : "border-gray-200"
-                  } rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600`}
+                  className={`block w-full py-3 pl-10 text-black placeholder-gray-500 border ${errors.password ? "border-red-500" : "border-gray-200"
+                    } rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600`}
                 />
                 <span onClick={togglePasswordVisibility} className="absolute right-3 inset-y-0 flex items-center cursor-pointer text-gray-600">
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -121,7 +133,7 @@ function Login() {
               </div>
             </div>
 
-            {/* Forgot Password Link */}  
+            {/* Forgot Password Link */}
             <div className="flex justify-end">
               <a href="/login/forgotpassword" className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
                 Forgot Password?

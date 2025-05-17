@@ -23,7 +23,6 @@ const Goals = lazy(() => import('./components/ToolPages/GoalsPage/Goals'));
 const Timesheets = lazy(() => import('./components/ToolPages/TimesheetsPage/Timesheets'));
 const PulsePage = lazy(() => import('./components/ToolPages/PulsePage/PulsePage'));
 const Teams = lazy(() => import('./components/Teams/Teams'));
-const ProjectTasks = lazy(() => import('./components/Task/ProjectTasks'));
 
 function App() {
   usePresence();
@@ -43,7 +42,7 @@ function App() {
             <Route path="/signup/EmailVerification/RegistrationSuccess" element={<RegistrationSuccess />} />
 
             {/* Admin Route */}
-            <Route path="/admin123" element={<AdminPanel />} />
+            <Route path="/user:admin/adminpanel" element={<AdminPanel />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
@@ -55,7 +54,6 @@ function App() {
               <Route path="/timesheets" element={<Timesheets />} />
               <Route path="/pulse" element={<PulsePage />} />
               <Route path="/teams" element={<Teams />} />
-              <Route path="/projects/:projectId/tasks" element={<ProjectTasks />} />
             </Route>
           </Routes>
         </Suspense>
