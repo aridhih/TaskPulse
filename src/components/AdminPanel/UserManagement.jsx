@@ -8,6 +8,7 @@ const UserManagement = ({ users, loading }) => {
 
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', email: '' });
+  const [isEditing, setIsEditing] = useState(false);
 
 
   const handleDeleteUser = async (userId) => {
@@ -23,12 +24,15 @@ const UserManagement = ({ users, loading }) => {
     const userRef = doc(db, 'users', editingUser.uid);
 
     try {
+      setIsEditing(true);
+      // Update the user document in Firestore
       await updateDoc(userRef, {
         name: editForm.name,
-        email: editForm.email,
-        phone: editForm.phone
+        email: editForm.email
       });
       setEditingUser(null);
+      setEditForm({ name: '', email: '' });
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -78,12 +82,12 @@ const UserManagement = ({ users, loading }) => {
                     </div>
                   )}
                   <div className="flex space-x-3 mt-3">
-                    <button 
+                    <button
                       onClick={() => {
                         setEditingUser(user);
-                        setEditForm({ name: user.name, email: user.email, phone: user.phone });
+                        setEditForm({ name: user.name, email: user.email });
                       }}
-                    className="p-2 rounded-full bg-teal-500/20 text-teal-400 hover:bg-teal-500/40 transition-colors duration-200">
+                      className="p-2 rounded-full bg-teal-500/20 text-teal-400 hover:bg-teal-500/40 transition-colors duration-200">
                       <FaEdit className="text-lg" />
                     </button>
                     <button className="p-2 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/40 transition-colors duration-200">
@@ -128,9 +132,9 @@ const UserManagement = ({ users, loading }) => {
               </button>
               <button
                 onClick={handleUpdateUser}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className={`px-4 py-2 bg-blue-600 ${isEditing ? 'opacity-50 cursor-not-allowed' : ''} text-white rounded hover:bg-blue-700`}
               >
-                Save
+                {isEditing ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>

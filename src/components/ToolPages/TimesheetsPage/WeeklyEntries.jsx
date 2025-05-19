@@ -8,19 +8,18 @@ const WeeklyEntries = ({ groupedEntries, tasks, weekDays }) =>
         const task = tasks.find((t) => t.id === taskId);
         return (
           <div key={taskId} className="mb-4">
-            <h3 className="font-semibold">Task: {task ? task.title : taskId}</h3>
+            <h3 className="font-semibold rounded bg-gray-100 p-2">Task: {task ? task.title : taskId}</h3>
             <div className="grid grid-cols-7 gap-4">
               {weekDays.map((day) => (
                 <div key={day}>
                   <p className="text-sm font-medium">{day}</p>
                   {(days[day] || []).map((entry) => (
-                    <div key={entry.id} className="text-xs text-gray-600">
+                    <div key={entry.id} className="text-[9px] text-gray-600">
                       <p>
                         {formatDuration(entry.durationInSeconds || 0)} (
                         {entry.startTime.toLocaleTimeString()} -{" "}
                         {entry.endTime?.toLocaleTimeString() || "N/A"})
                       </p>
-                      {entry.note && <p className="italic">Note: {entry.note}</p>}
                     </div>
                   ))}
                 </div>

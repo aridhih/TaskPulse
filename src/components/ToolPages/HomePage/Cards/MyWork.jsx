@@ -6,7 +6,7 @@ import { MdTaskAlt } from "react-icons/md";
 import RemoveCardMenu from './RemoveCardMenu';
 import { IoFlagOutline } from "react-icons/io5";
 
-const MyWork = ({removeCard}) => {
+const MyWork = ({ removeCard }) => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [activeTaskTab, setActiveTaskTab] = useState("todo");
   const [tasks, setTasks] = useState([]);
@@ -56,17 +56,20 @@ const MyWork = ({removeCard}) => {
       {/* Task Tabs */}
       <div className="p-2">
         <div className="flex space-x-6 border-b mb-4">
-          {["todo", "In progress", "completed"].map((tab) => (
+          {["todo", "progress", "completed"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTaskTab(tab)}
               className={`pb-2 px-4 font-medium border-b-2  transition-colors duration-200 ${activeTaskTab === tab
-                  ? "border-black text-black"
-                  : "border-transparent text-gray-600 hover:text-black"
+                ? "border-black text-black"
+                : "border-transparent text-gray-600 hover:text-black"
                 }`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
+              {tab === "todo"
+                ? "To Do"
+                : tab === "progress"
+                  ? "In Progress"
+                  : "Completed"}            </button>
           ))}
         </div>
 
@@ -92,10 +95,10 @@ const MyWork = ({removeCard}) => {
 
                 <span
                   className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs ${task.priority === "high"
-                      ? "bg-red-500"
-                      : task.priority === "medium"
-                        ? "bg-yellow-500 text-black"
-                        : "bg-green-500"
+                    ? "bg-red-500"
+                    : task.priority === "medium"
+                      ? "bg-yellow-500 text-black"
+                      : "bg-green-500"
                     }`}
                 >
                   <IoFlagOutline className="text-sm" />
@@ -111,7 +114,7 @@ const MyWork = ({removeCard}) => {
 
       {isCardOpen && (
         <>
-          <RemoveCardMenu toggleCard={toggleCard}  removeCard={removeCard} cardName="My Work" />
+          <RemoveCardMenu toggleCard={toggleCard} removeCard={removeCard} cardName="My Work" />
           <div className="fixed inset-0 z-40" onClick={toggleCard}></div>
         </>
       )}

@@ -2,7 +2,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 const RemoveCardMenu = ({ toggleCard, removeCard, cardName }) => {
   return (
-    <div className="relative inset-0 z-50" onClick={toggleCard}>
+    <div className="relative  inset-0 z-50" onClick={toggleCard}>
       <div className="absolute left-[410px] bottom-48 text-nowrap bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer z-50">
         <div className="p-1 flex justify-center items-center">
           <div

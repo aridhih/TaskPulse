@@ -67,7 +67,6 @@ export const fetchTasks = async (userId, teamCache, projectCache) => {
     task.projectPath = `${teamName} / Projects / ${projectName}`;
     tasks.push(task);
   }
-  console.log("Tasks fetched:", tasks);
   return { tasks, teamCache: newTeamCache, projectCache: newProjectCache };
 };
 

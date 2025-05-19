@@ -4,12 +4,13 @@ import Dashboard from './Dashboard';
 import UserManagement from './UserManagement';
 import Settings from './Settings';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 
 const AdminPanel = () => {
   const [activeComponent, setActiveComponent] = useState('Dashboard');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [IsAdmin, setIsAdmin] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -17,6 +18,10 @@ const AdminPanel = () => {
         const usersCollection = collection(db, 'users');
         const usersSnapshot = await getDocs(usersCollection);
         const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const currentUser = usersList.find(user => user.id === auth.currentUser.uid);
+        if (currentUser) {
+          setIsAdmin(currentUser.role);
+        }
         setUsers(usersList);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -49,7 +54,7 @@ const AdminPanel = () => {
           <div className="w-8 h-8 border-2 border-black border-dashed rounded-full animate-spin"></div>
           <p className="ml-2">Please Wait ...</p>
         </div>
-      ) : users.length === 0 ? (
+      ) :  IsAdmin ===  'user'? (
         <div className="flex h-full items-center justify-center w-full">
           <p className="ml-2 text-white text-xl font-semibold">Access Denied</p>
         </div>

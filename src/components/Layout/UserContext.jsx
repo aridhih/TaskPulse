@@ -2,12 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-// Step 1: Context Create Karo
-const UserContext = createContext(null);
 
-// Step 2: Provider Component
+const UserContext = createContext({ user: null, loading: true });
+
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const db = getFirestore();
 
@@ -19,15 +19,18 @@ export const UserProvider = ({ children }) => {
       } else {
         setUser(null);
       }
+      setLoading(false); // loading complete
     });
 
     return () => unsubscribe();
   }, []);
 
   return (
-    <UserContext.Provider value={user}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, loading }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 
-// Step 3: Custom Hook for Easy Access
 export const useUser = () => useContext(UserContext);
+

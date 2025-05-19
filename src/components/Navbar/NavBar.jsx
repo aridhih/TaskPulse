@@ -22,10 +22,9 @@ const Modal = ({ children }) => (
 );
 
 const NavBar = () => {
-  const user = useUser();
+  const {user,loading} = useUser();
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [modals, setModals] = useState({
     profile: false, settings: false, form: false, notePad: false, newPopup: false
@@ -41,14 +40,8 @@ const NavBar = () => {
     (t.description && t.description?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  
-  const filteredUsers = users.filter(u =>
-    (u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     u.email?.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-  
 
-  const hasResults = filteredTasks.length > 0 || filteredUsers.length > 0;
+  const hasResults = filteredTasks.length > 0;
 
   const toggleModal = (key) => setModals(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -62,15 +55,12 @@ const NavBar = () => {
     }
   };
 
+
   useEffect(() => {
     const fetchData = async () => {
       if (!user || !user.uid) return;
 
       try {
-        // Fetch users
-        const usersSnap = await getDocs(collection(db, "users"));
-        const userList = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setUsers(userList);
 
         // Fetch tasks where user is either creator or assigned
         const [createdSnap, assignedSnap] = await Promise.all([
@@ -114,13 +104,7 @@ const NavBar = () => {
             <CiSearch className='text-black mx-2' />
           </button>
           {showResults && (
-            <SearchModel
-              showResults={showResults}
-              searchTerm={searchTerm}
-              hasResults={hasResults}
-              filteredUsers={filteredUsers}
-              filteredTasks={filteredTasks}
-            />
+            <SearchModel showResults={showResults} searchTerm={searchTerm} hasResults={hasResults} filteredTasks={filteredTasks} />
           )}
         </div>
 

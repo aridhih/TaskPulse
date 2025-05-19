@@ -1,15 +1,6 @@
 import { formatDuration } from "./dateUtils";
 
-const TimesheetTable = ({
-  tasks,
-  timesheetData,
-  week,
-  activeTimers,
-  handleStart,
-  handlePause,
-  handleResume,
-  handleStop,
-}) => (
+const TimesheetTable = ({ tasks, timesheetData, week, activeTimers, handleStart, handlePause, handleResume, handleStop, }) => (
   <div className="overflow-x-auto">
     <table className="min-w-full border-t border-b text-sm">
       <thead className="bg-gray-50">
@@ -34,17 +25,14 @@ const TimesheetTable = ({
         ) : (
           tasks.map((task) => {
             const taskData = timesheetData[task.id] || {};
-            const totalSeconds = Object.values(taskData).reduce(
-              (sum, sec) => sum + sec,
-              0
-            );
+            const totalSeconds = Object.values(taskData).reduce((sum, sec) => sum + sec, 0);
 
             return (
-              <tr key={task.id} className="border-t">
+              <tr key={task.id} className="border">
                 <td className="px-4 py-2 text-left">
                   <div className="font-semibold">{task.title}</div>
-                  <div className="text-xs text-gray-500">
-                    {task.status} • {task.projectPath}
+                  <div className="text-xs text-gray-500 flex justify-between">
+                    <span className="font-semibold">{task.status}</span><span className="text-blue-400 text-[10px]">{task.projectPath}</span>
                   </div>
                 </td>
 

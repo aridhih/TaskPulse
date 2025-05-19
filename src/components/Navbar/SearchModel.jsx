@@ -1,15 +1,9 @@
-import { FaUserAlt, FaTasks, FaSearch } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import {  FaTasks, FaSearch } from 'react-icons/fa';
 
-const SearchModel = ({ showResults, searchTerm, hasResults, filteredUsers, filteredTasks }) => {
-  const navigate = useNavigate(); 
+const SearchModel = ({ showResults, searchTerm, hasResults, filteredTasks }) => {
 
-  const openchat = (e) => {
-          navigator.clipboard.writeText(e.target.innerText)
-          alert("Email copied to clipboard");
-          navigate(`/inbox`)
-  };
-  const noResults = filteredUsers.length === 0 && filteredTasks.length === 0;
+  
+  const noResults = filteredTasks.length === 0;
 
   if (!showResults || !searchTerm || (!hasResults && !noResults)) return null;
 
@@ -24,26 +18,8 @@ const SearchModel = ({ showResults, searchTerm, hasResults, filteredUsers, filte
           <p className="text-xs mt-1">Try refining your search.</p>
         </div>
       ) : (
-        <div>
-          {filteredUsers.length > 0 && (
-            <div>
-              <h2 className="flex items-center gap-2 font-semibold text-base text-blue-600 mb-3">
-                <FaUserAlt className="text-sm" />
-                Users
-              </h2>
-              {filteredUsers.map(user => (
-                <div
-                  key={user.id}
-                  onClick={openchat}
-                  className="p-3 mb-2 bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg shadow-sm transition-colors duration-200"
-                >
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-xs text-gray-500"  >{user.email}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
+        <div>         
+          
           {filteredTasks.length > 0 && (
             <div className="mt-6">
               <h2 className="flex items-center gap-2 font-semibold text-base text-blue-600 mb-3">

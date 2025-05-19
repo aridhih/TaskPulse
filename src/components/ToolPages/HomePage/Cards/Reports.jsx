@@ -57,7 +57,7 @@ const Reports = ({ removeCard }) => {
   return (
     <div className='h-72 overflow-auto border-gray-300 py-1 px-4 border bg-gray-200 rounded-xl shadow-lg shadow-gray-300'>
       <div className="h-[15%] border-b border-gray-300 font-medium justify-between flex items-center">
-        <p>Reports</p>
+        <p>Project Reports</p>
         <PiDotsThreeOutlineThin className={`hover:text-black hover:text-xl ${isCardOpen && 'text-black text-xl'} cursor-pointer text-gray-500`} onClick={toggleCard} />
       </div>
 

@@ -9,7 +9,7 @@ import HomeSliderPanel from "./HomeSliderPanel";
 import { useUser } from "../../Layout/UserContext";
 
 const Home = () => {
-  const user = useUser();
+  const {user,loading} = useUser();
   const [greeting, setGreeting] = useState('');
   const [cards, setCards] = useState(["Recents", "Assigned To Me", "My Work", "Reports"]);
   const [uiState, setUiState] = useState({
@@ -21,19 +21,26 @@ const Home = () => {
   const toggle = (key) => setUiState((prev) => ({ ...prev, [key]: !prev[key] }));
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    setGreeting(
-      hour < 12 ? 'Good Morning' :
-        hour < 18 ? 'Good Afternoon' :
-          hour < 22 ? 'Good Evening' : 'Good Night'
-    );
+ const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good Morning';
+  if (hour < 18) return 'Good Afternoon';
+  if (hour < 22) return 'Good Evening';
+  return 'Good Night';
+};
 
-    const timer = setTimeout(() => {
-      setUiState((prev) => ({ ...prev, isToggled: false }));
-    }, 3 * 60 * 1000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  if (user?.role === 'admin') {
+    alert('Welcome Admin');
+  }
+
+  const timer = setTimeout(() => {
+    setUiState((prev) => ({ ...prev, isToggled: false }));
+  }, 3 * 60 * 1000);
+  setGreeting(getGreeting())
+  return () => clearTimeout(timer);
+}, [user]); 
+
 
 
   const addCard = (card) => setCards([...cards, card]);
@@ -113,6 +120,7 @@ const Home = () => {
 
       <HomeSliderPanel isSliderOpen={uiState.isSliderOpen} toggleSlider={() => toggle('isSliderOpen')} cards={cards} addCard={addCard} removeCard={removeCard} />
     </div>
+
   );
 };
 

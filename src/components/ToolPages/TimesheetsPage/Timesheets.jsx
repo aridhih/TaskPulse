@@ -43,7 +43,7 @@ const Timesheets = () => {
       } catch (error) {
         console.error("Fetch error:", error);
         toast.error(error.code === "permission-denied" ? "Access denied" : "Failed to load data");
-      } 
+      }
     };
     fetchData();
   }, [start]);
@@ -55,27 +55,21 @@ const Timesheets = () => {
   return (
     <div className="h-[calc(100vh-50px)] w-full border rounded-b-lg">
       <div className="h-[54px] bg-gradient-to-l from-purple-500 via-blue-500 to-navbar p-2 flex justify-between items-center text-white">
-       
+
         <div className="flex gap-1 ml-1 justify-center items-center">
           <RiTimerLine size={16} />
           <p className="text-[13px] cursor-default font-[cursive]">Timesheets</p>
         </div>
       </div>
-       <div className="flex items-center gap-1 my-5 ml-4">
-          <RiArrowLeftLine
-            className="cursor-pointer"
-            onClick={handlePrevWeek}
-            size={20}
-          />
-          <p className="text-[13px] font-[cursive]">
-            {`${week[0].label} - ${week[6].label}`}
-          </p>
-          <RiArrowRightLine
-            className="cursor-pointer"
-            onClick={handleNextWeek}
-            size={20}
-          />
-        </div>
+      <div className="overflow-y-auto h-[calc(100vh-104px)]">
+      
+      <div className="flex items-center gap-1 my-5 ml-4">
+        <RiArrowLeftLine className="cursor-pointer" onClick={handlePrevWeek} size={20} />
+        <p className="text-[13px] font-[cursive]">
+          {`${week[0].label} - ${week[6].label}`}
+        </p>
+        <RiArrowRightLine className="cursor-pointer" onClick={handleNextWeek} size={20} />
+      </div>
       <TimesheetTable
         tasks={tasks}
         timesheetData={timesheetData}
@@ -88,6 +82,7 @@ const Timesheets = () => {
         notes={notes}
       />
       <WeeklyEntries groupedEntries={groupedEntries} tasks={tasks} weekDays={week.map((d) => d.iso)} />
+      </div>
     </div>
   );
 };

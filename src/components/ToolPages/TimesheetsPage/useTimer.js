@@ -2,6 +2,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { saveTimeEntry } from "./firestoreQueries";
+import { auth } from "../../../firebase";
 
 const useTimer = (setTimesheetData, notes, setNotes) => {
   const [activeTimers, setActiveTimers] = useState({});
