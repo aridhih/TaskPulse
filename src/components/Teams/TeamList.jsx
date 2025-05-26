@@ -10,6 +10,7 @@ const TeamList = ({ teams, onTeamSelect }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [newMemberUID, setNewMemberUID] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Handle Adding Member
   const handleAddMember = async () => {
@@ -19,11 +20,12 @@ const TeamList = ({ teams, onTeamSelect }) => {
     }
 
     try {
+      setIsAdding(true);
       const teamRef = doc(db, "teams", selectedTeamId);
       await updateDoc(teamRef, {
         members: arrayUnion(newMemberUID),
       });
-
+      setIsAdding(false);
       toast.success(" Member added successfully!");
     } catch (error) {
       console.error("Error adding member:", error);
@@ -39,7 +41,7 @@ const TeamList = ({ teams, onTeamSelect }) => {
       <Toaster position="top-right" reverseOrder={false} />
 
 
-      <ul className="p-4 space-y-3 relative bg-white rounded-lg shadow-md h-[calc(100vh-170px)] scroll-container overflow-y-auto">
+      <ul className="p-4 space-y-3 relative bg-white rounded-lg shadow-md h-[calc(100vh-160px)] scroll-container overflow-y-auto">
         <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="cross-hatch" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -119,9 +121,9 @@ const TeamList = ({ teams, onTeamSelect }) => {
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={handleAddMember}
-                  className="bg-blue-500 text-white px-4 py-2 w-24 rounded-lg hover:bg-blue-600 transition"
+                  className={`bg-blue-500 ${isAdding ? "cursor-not-allowed" : ""} text-white px-4 py-2 w-24 rounded-lg hover:bg-blue-600 transition`}
                 >
-                  Add
+                  {isAdding ? "Adding..." : "Add"}
                 </button>
                 <button
                   onClick={() => setShowPopup(false)}

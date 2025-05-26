@@ -8,6 +8,7 @@ import { db, auth } from "../../../firebase";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 
 const ClipsPage = () => {
+  const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [videoURL, setVideoURL] = useState(null);
   const [savedVideos, setSavedVideos] = useState([]);
@@ -48,6 +49,7 @@ const ClipsPage = () => {
   };
 
   const fetchSavedVideos = async () => {
+    setLoading(true);
     const q = query(collection(db, "clips"), where("user", "==", auth.currentUser.uid));
     const querySnapshot = await getDocs(q);
     const videos = querySnapshot.docs.map(doc => ({
@@ -57,6 +59,7 @@ const ClipsPage = () => {
     }));
 
     setSavedVideos(videos);
+    setLoading(false);
   };
 
   const handleDelete = async (videoId) => {
@@ -109,6 +112,12 @@ const ClipsPage = () => {
         />
       ) : (
         <div className="h-[calc(100vh-115px)] w-full p-4 flex flex-col gap-6 bg-white overflow-y-scroll hide-scrollbar">
+          {loading && (
+            <div className="flex justify-center items-center h-[488px] ">
+              <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+              <span className="ml-4 text-gray-500 text-base">Loading Clips ...</span>
+            </div>
+          )}
           {savedVideos.length > 0 ? (
             <div className="mt-5">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">📁 Saved Clips</h2>
@@ -123,7 +132,7 @@ const ClipsPage = () => {
                 ))}
               </div>
             </div>
-          ) : (
+          ) : !loading &&(
             <EmptyState toggleMenu={toggleMenu} />
           )}
         </div>

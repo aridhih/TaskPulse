@@ -159,7 +159,7 @@ const NavBar = () => {
           </div>
         </Modal>
       )}
-      {modals.profile && <Modal><Profile toggleProfile={() => toggleModal("profile")} toggleMenu={() => setIsMenuOpen(false)} /></Modal>}
+      {modals.profile && <Modal><Profile toggleProfile={() => toggleModal("profile")} toggleMenu={() => setIsMenuOpen(false)} user ={user} /></Modal>}
       {modals.settings && <Modal><Setting toggleSetting={() => toggleModal("settings")} toggleMenu={() => setIsMenuOpen(false)} user={user} /></Modal>}
       {modals.notePad && <NotePad toggleNotePad={() => toggleModal("notePad")} user={user} />}
     </>

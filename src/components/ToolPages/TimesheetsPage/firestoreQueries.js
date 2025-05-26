@@ -87,14 +87,13 @@ export const fetchTimesheets = async (userId, start, end) => {
   return timesheetData;
 };
 
-export const saveTimeEntry = async (userId, task, timer, duration, note, today) => {
+export const saveTimeEntry = async (userId, task, timer, duration, today) => {
   await addDoc(collection(db, "timeEntries"), {
     userId,
     taskId: task.id,
-    startTime: new Date(timer.startTime),
+    startTime: new Date(timer.startedAt),
     endTime: new Date(Date.now()),
-    durationInSeconds: duration,
-    note: note || "",
+    durationInSeconds: duration
   });
   await addDoc(collection(db, "timesheets"), {
     userId,

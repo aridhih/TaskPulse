@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CreateTaskForm from "../Task/CreateTaskForm";
-import { useUser } from "../Layout/UserContext";
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { collection, getDocs, query, where, doc, getDoc, documentId } from "firebase/firestore";
 
 
@@ -9,11 +8,19 @@ const TABS = ['Task'];
 
 
 const NewPopUp = ({ toggleNewPopup, activeTab, setActiveTab }) => {
-  const user = useUser();
+ const [user,setUser] = useState(null);
   const [projects, setProjects] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
+
+    const fetchUser = async () => {
+    const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        setUser(userDoc.exists() ? userDoc.data() : null);
+    }
+
+    fetchUser();
+
     const team = user?.teamId;
     const fetchProjects = async (team) => {
       try {

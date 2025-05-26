@@ -1,13 +1,11 @@
 import { FaUserCircle } from "react-icons/fa";
-import { useUser } from "../Layout/UserContext";
 import { useState } from "react";
 import { auth } from "../../firebase";
 import { MdOutlineContentCopy } from "react-icons/md";
 
-const Profile = ({ toggleProfile, toggleMenu }) => {
-  const user = useUser();
+const Profile = ({ toggleProfile, toggleMenu, user }) => {
   const [copied, setCopied] = useState(false);
-  const [profileLoader, setProfileLoader] = useState(!!user?.photoURL); // Start loading only if image exists
+  const [profileLoader, setProfileLoader] = useState(!!user?.photoURL); 
 
   const handleCopy = () => {
     if (auth.currentUser?.uid) {
