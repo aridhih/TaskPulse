@@ -99,7 +99,7 @@ const NewPopUp = ({ toggleNewPopup, activeTab, setActiveTab }) => {
         </div>
 
         {activeTab === 'task' && (
-          projects.length === 0 ? (
+          !user?.teamId ? (
             <div className="text-center h-[80%] flex justify-center items-center text-gray-500">Create your team to assign tasks</div>
           ) : (
             <CreateTaskForm
