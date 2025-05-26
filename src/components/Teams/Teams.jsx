@@ -11,12 +11,14 @@ import Breadcrumb from './BreadCrumb';
 import { useNavigate } from 'react-router-dom';
 import { CiSettings } from "react-icons/ci";
 import TeamSettings from './TeamSettings';
+import EditProjectModal from './EditProjectModal';
 
 
 const Teams = () => {
     const [teams, setTeams] = useState([]), [projects, setProjects] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null), [selectedProject, setSelectedProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [editingProject, setEditingProject] = useState(null);
     const navigate = useNavigate();
     const [isCreator, setIsCreator] = useState(false);
     const [projectName, setProjectName] = useState('');
@@ -66,6 +68,11 @@ const Teams = () => {
         }
     };
 
+    const handleEditProject = (project) => {
+        setEditingProject(project);
+    };
+
+
     const handleCreateProject = async () => {
         if (!projectName.trim()) return setError("Project name cannot be empty.");
         if (!auth.currentUser || !selectedTeam || !isCreator) return;
@@ -109,7 +116,7 @@ const Teams = () => {
 
     const handleProjectDeleted = (id) => {
         setProjects(prev => prev.filter(p => p.id !== id));
-    
+
         // If the deleted project was selected, clear it
         if (selectedProject && selectedProject.id === id) {
             setSelectedProject(null);
@@ -118,7 +125,7 @@ const Teams = () => {
             navigate({ search: params.toString() }, { replace: true });
         }
     };
-    
+
     const handleTeamCreated = (team) => { setTeams(prev => [...prev, team]); setShowTeamForm(false); };
 
     return (
@@ -161,7 +168,13 @@ const Teams = () => {
                     <AnimatePresence mode="wait">
                         {!selectedProject && (
                             <motion.div key="projectList" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}                            >
-                                <ProjectList projects={projects} isCreator={isCreator} onProjectDeleted={handleProjectDeleted} onProjectClick={handleProjectClick} />
+                                <ProjectList onProjectEdit={handleEditProject} projects={projects} isCreator={isCreator} onProjectDeleted={handleProjectDeleted} onProjectClick={handleProjectClick} />
+                                {editingProject && (
+                                    <EditProjectModal
+                                        project={editingProject}
+                                        onClose={() => setEditingProject(null)}
+                                    />
+                                )}
                             </motion.div>
                         )}
 

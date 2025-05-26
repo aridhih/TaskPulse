@@ -4,38 +4,38 @@ import { ImBin } from "react-icons/im";
 import { db } from "../../firebase";
 import toast, { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaEdit } from "react-icons/fa";
 
-const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick }) => {
+const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick, onProjectEdit }) => {
   const [confirmDel, setConfirmDel] = useState(null);
 
- const handleDeleteProject = async (projectId) => {
-  const tasksRef = collection(db, "tasks");
-  const q = query(tasksRef, where("projectId", "==", projectId));
 
-  const taskSnapshots = await getDocs(q);
+  const handleDeleteProject = async (projectId) => {
+    const tasksRef = collection(db, "tasks");
+    const q = query(tasksRef, where("projectId", "==", projectId));
 
-  const deleteTasks = taskSnapshots.docs.map((taskDoc) =>
-    deleteDoc(doc(db, "tasks", taskDoc.id))
-  );
+    const taskSnapshots = await getDocs(q);
 
-  toast.promise(
-    Promise.all([
-      deleteDoc(doc(db, "projects", projectId)), // delete project
-      ...deleteTasks // delete tasks
-    ]),
-    {
-      loading: "Deleting project and related tasks...",
-      success: "Project & tasks deleted successfully! 🚀",
-      error: "Failed to delete project or tasks! ❌",
-    }
-  ).then(() => {
-    onProjectDeleted(projectId);
-  });
+    const deleteTasks = taskSnapshots.docs.map((taskDoc) =>
+      deleteDoc(doc(db, "tasks", taskDoc.id))
+    );
 
-  setConfirmDel(null);
-};
+    toast.promise(
+      Promise.all([
+        deleteDoc(doc(db, "projects", projectId)), // delete project
+        ...deleteTasks // delete tasks
+      ]),
+      {
+        loading: "Deleting project and related tasks...",
+        success: "Project & tasks deleted successfully! 🚀",
+        error: "Failed to delete project or tasks! ❌",
+      }
+    ).then(() => {
+      onProjectDeleted(projectId);
+    });
 
-
+    setConfirmDel(null);
+  };
 
   return (
     <>
@@ -51,18 +51,30 @@ const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick }) 
               }}
 
             >
-              <p>
-                {project.projectName} (Status:{" "}
-                <span className="text-gray-600">{project.status}</span>)
-              </p>
+              <div className="flex items-center">
+                <b>{project.projectName}</b>
+                <p className="ml-4">(Status:{" "}
+                  <span className={`${project.status === "active" ? "text-green-600" : "text-gray-400"}`} >{project.status}</span>)
+                </p>
+              </div>
               {isCreator && (
-                <ImBin
-                  className="hover:text-red-500 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent click from triggering project select
-                    setConfirmDel(project.id);
-                  }}
-                />
+                <div className="flex gap-4">
+                  <FaEdit
+                    className="hover:text-blue-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onProjectEdit(project)
+                    }}
+                  />
+                  <ImBin
+                    className="hover:text-red-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmDel(project.id);
+                    }}
+                  />
+                </div>
+
               )}
 
               {/* Delete Confirmation Modal */}
@@ -104,7 +116,7 @@ const ProjectList = ({ projects, isCreator, onProjectDeleted, onProjectClick }) 
         ) : (
           <p className="text-gray-500">No projects found.</p>
         )}
-      </ul>
+      </ul >
     </>
   );
 };

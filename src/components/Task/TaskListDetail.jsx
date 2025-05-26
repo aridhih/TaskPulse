@@ -57,7 +57,7 @@ const TaskListDetail = ({ task, assignedUser, onClose, onStatusChange }) => {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Task Details</h2>
 
         <div className="space-y-3 text-gray-700 text-sm">
-          <p>
+          <p className = "bg-gray-100 p-1 rounded ">
             <strong>Title:</strong> {task.title}
           </p>
           <p>
@@ -84,9 +84,12 @@ const TaskListDetail = ({ task, assignedUser, onClose, onStatusChange }) => {
           {task.createdAt && (
             <p>
               <strong>Created On:</strong>{' '}
-              {new Date(task.createdAt.seconds * 1000).toLocaleDateString()}
+              {task.createdAt?.seconds
+                ? new Date(task.createdAt.seconds * 1000).toLocaleDateString()
+                : new Date(task.createdAt).toLocaleDateString()}
             </p>
           )}
+
           {task.deadline && (
             <p>
               <strong>End Date:</strong>{' '}
@@ -98,17 +101,17 @@ const TaskListDetail = ({ task, assignedUser, onClose, onStatusChange }) => {
               <strong>Team:</strong> {teamName}
             </p>
           )}
-         <div onClick={() => setSelectedTask(task)}>
-  ...
-  <select
-    value={task.status}
-    onChange={(e) => onStatusChange(task.id, e.target.value)}
-  >
-    <option value="To Do">To Do</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Completed">Completed</option>
-  </select>
-</div>
+          <div onClick={() => setSelectedTask(task)}>
+            ...
+            <select
+              value={task.status}
+              onChange={(e) => onStatusChange(task.id, e.target.value)}
+            >
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -117,27 +120,27 @@ const TaskListDetail = ({ task, assignedUser, onClose, onStatusChange }) => {
 
 
 TaskListDetail.propTypes = {
-    task: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      priority: PropTypes.string,
-      status: PropTypes.string,
-      assignedTo: PropTypes.string,
-      createdBy: PropTypes.string, // ✅ Add this line
-      deadline: PropTypes.string,
-      createdAt: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object, // e.g. Firebase Timestamp
-      ]),
-    }).isRequired,
-    assignedUser: PropTypes.shape({
-      name: PropTypes.string,
-      photoURL: PropTypes.string,
-    }),
-    onClose: PropTypes.func.isRequired,
-    onStatusChange: PropTypes.func.isRequired,
-  };
-  
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    priority: PropTypes.string,
+    status: PropTypes.string,
+    assignedTo: PropTypes.string,
+    createdBy: PropTypes.string,
+    deadline: PropTypes.string,
+    createdAt: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
+  }).isRequired,
+  assignedUser: PropTypes.shape({
+    name: PropTypes.string,
+    photoURL: PropTypes.string,
+  }),
+  onClose: PropTypes.func.isRequired,
+  onStatusChange: PropTypes.func.isRequired,
+};
+
 
 export default TaskListDetail;
