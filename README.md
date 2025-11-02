@@ -13,11 +13,4 @@ disjointed tools, reducing confusion and improving accountability. Developed wit
 usability and reliability, TaskPulse aims to address the major challenges of remote work such as 
 fragmented communication and limited visibility by offering an all-in-one solution that empowers 
 teams to stay organized, informed, and productive. 
-Implementation Tools and Technology 
-• HTML 
-• Tailwind CSS 
-• Java Script 
-• React JS 
-• Firebase 
-• Node JS 
-• VS Code
+
